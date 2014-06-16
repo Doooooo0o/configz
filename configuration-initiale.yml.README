@@ -1,0 +1,56 @@
+ ## README configuration-initiale.yml ##
+
+#### Description ####
+Ce playbook permet de configurer basiquement une debian.
+Il englobe la mise en place :
+
+ - Des locales fr-UTF8
+ - L'installation de paquets par défaut utiles
+ - La mise en place de clefs SSH pour permettre la connexion
+ - La mise en place de serveurs NTP personnalisés
+ - L'installation d'un bashrc basé sur liquid prompt
+ - L'installation de themes de couleurs pour vim
+ - La configuration de la timezone Europe/Paris
+ - La désactivation ou non de l'IPv6 selon les variables du serveur
+ - La mise en place d'un motd indiquant le fqdn du serveur et sa description
+
+Les configurations suivantes se font uniquement si la variable initialize=True est passee en parametre du playbook
+(grace a l'option : -e initialize=True)
+  - La mise en place d'un fichier /root/README.root ou indiquer les modificatiosn faites sur le serveur
+  - La modification du fichier /root/.profile pour afficher les informations de /root/README.root
+
+#### Utilisation ####
+Ce playbook demande un certain nombre de variables définies.
+Il echouera si l'une de ces variables n'est pas définie.
+L'ideal est que ces variables soient definies pour tous les hotes basiquement (via un groupe par exemple), avec eventuellement des personnalisation par serveur selon les besoins.
+Après la description suivent des exemples de ces variables.
+ - admin_ssh_keys : la liste des clefs ssh a copier sur le serveur (pour root)
+ - default_packages_debian : la liste des packages debian a installer par defaut
+ - ansible_fqdn : le nom a donner au serveur
+ - description : La description du serveur (s'affichera a la connexion)
+ - ntp_server1 : le premier serveur NTP a utiliser
+ - ntp_server2 : le deuxième serveur ntp a installer
+ - disable_ipv6 : IPv6 doit il etre desactive ou non
+
+### Exemples de variables ###
+fichier : /etc/ansible/group_vars/all :
+admin_ssh_keys:
+  - ssh-rsa UwJmYYms/TRKBpKvux8JcukSdSA/cZRzlAnNn4ZDXhxpnHE6xcVCoHeHXg95479K8w33ZLsXTHviUripz2tP/a+BQ+wHFeROqLBjSvSZRX/oJtQRLDnghNXTq6XrMuqTenVWDP/YQFZd6i7lk/bt3Y8obrGa1OHNf+9RR783CZijjApiuctKobCN4SVd1n8xzjFtsp0uALwZy+WCJfH9DZanv4vOMLj0DPjvfQQ3h3/HWgA6+vDhJ0a5X8PAQ5mWdRsOqUUFZyFvoP/VslnP+/Fsf/FfO2Swp9uCqxVVm3vFi4tpyFj1XmjkFSCkFdTsBebA0nLL5hkzq0LxWSSNMSxW9S+D7cpy1mgwgrPBFzwS5c/mL1+sNakpxro4vrI0u+lRBw96DtqLpT1BGU5w2qbHMuSfrhu1SM/GyGTslgNorpNY5u5Rs5e6dMfAotmrM00f1oML/qORYV2K/QnQSVTHM5hcUWxyzXv7RXMRcuQWAKlWXPk0IxbnN0a12yIv50= foo@bar
+
+default_packages_debian:
+  - vim
+  - python-apt
+  - python-pycurl
+  - locales
+  - debconf-utils
+
+ansible_fqdn: serveur-debian.exemple.com
+
+description: Bienvenue sur ce serveur debian
+
+ntp_server1: 0.fr.pool.ntp.org
+ntp_server2: 1.fr.pool.ntp.org
+
+disable_ipv6: yes
+
+

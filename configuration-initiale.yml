@@ -1,0 +1,12 @@
+---
+# Playbook permettant d'appliquer le role common sur un hote lors de l'install (configuration locales, ntp, premiers paquets, etc)
+
+- name: Deployer la configuration basique sur un hote
+  hosts: all
+  user: root
+  gather_facts: yes
+
+  roles:
+    - common
+
+# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:

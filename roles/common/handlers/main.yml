@@ -1,0 +1,44 @@
+---
+# handlers du role common
+
+- name: update aliases
+  command: newaliases
+
+- name: restart munin-node
+  service: name=munin-node state=restarted
+
+- name: restart hobbit-client
+  service: name=hobbit-client state=restarted
+
+- name: restart xymon-client
+  service: name=xymon-client state=restarted
+
+- name: restart gwm
+  service: name=gwm state=restarted
+
+- name: restart xend
+  service: name=xend state=restarted
+
+- name: update-grub
+  command: update-grub
+
+- name: restart collectd
+  service: name=collectd state=restarted
+
+- name: restart ntp
+  service: name=ntp state=restarted
+
+- name: restart xymon
+  service: name=xymon state=restarted
+
+- name: update mysql_relay_domains map
+  shell: postmap /etc/postfix/mysql_relay_domains.cf
+
+- name: restart postfix
+  service: name=postfix state=restarted
+
+- name: apt-update
+  command: apt-get update
+
+# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
+

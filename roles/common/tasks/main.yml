@@ -1,0 +1,119 @@
+---
+# Role commun à toutes les machines
+# vars: admin_ssh_keys, repositories, default_packages, ntp_server1, ntp_server2, description
+
+# Bootstrap if necessary (install python-apt)
+
+- name: Bootstrap if necessary
+  tags: bootstrap
+  raw: python -c "import apt" || DEBIAN_FRONTEND=noninteractive apt-get --force-yes -y install python-apt
+  when: ansible_distribution == 'Debian'
+  
+# Check mandatory variables
+
+- name: Check vars 
+  fail: msg="Missing variable admin_ssh_keys"
+  when: admin_ssh_keys is not defined
+
+- name: Check vars 
+  fail: msg="Missing variable default_packages_debian"
+  when: default_packages_debian is not defined
+
+- name: Check vars 
+  fail: msg="Missing variable description"
+  when: description is not defined
+
+- name: Check vars 
+  fail: msg="Missing variable ntp_server1"
+  when: ntp_server1 is not defined
+
+- name: Check vars 
+  fail: msg="Missing variable ntp_server2"
+  when: ntp_server2 is not defined
+
+- name: Check vars 
+  fail: msg="Missing variable disable_ipv6"
+  when: disable_ipv6 is not defined
+
+# SSH
+
+- name: Deploy SSH keys
+  tags: ssh_keys
+  authorized_key: user=root key="{{item}}"
+  with_items: "{{admin_ssh_keys}}"
+
+# Packages
+
+- name: Install default packages Debian.
+  apt: pkg={{item}} state=installed
+  with_items: "{{ default_packages_debian }}" 
+  when: ansible_distribution == 'Debian'
+
+# Configure NTP
+
+- name: Configure NTP
+  tags: ntp
+  template: src=etc-ntp.conf.j2 dest=/etc/ntp.conf
+
+
+# Basic Shell & vim configuration
+
+- name: Custom .bashrc
+  tags: custom
+  copy: src=root-.bashrc dest=/root/.bashrc
+- name: Custom .vimrc
+  tags: custom
+  copy: src=root-.vimrc dest=/root/.vimrc
+- name: Custom .inputrc
+  tags: custom
+  copy: src=root-.inputrc dest=/root/.inputrc
+- name: Create .vim/colors
+  tags: custom
+  file: path=/root/.vim/colors state=directory
+- name: Wombat vim colors theme is awesome
+  tags: custom
+  copy: src=root-.vim-colors-wombat.vim dest=/root/.vim/colors/wombat.vim
+
+# Set motd and README.root
+
+- name: Set the motd
+  tags: custom
+  template: src=etc-motd.j2 dest=/etc/motd
+
+- name: Modify /root/.profile
+  tags: custom
+  copy: src=root-.profile dest=/root/.profile
+  when: initialize == True
+- name: Add  basic README.root
+  tags: custom
+  copy: src=root-README.root dest=/root/README.root
+  when: initialize == True
+
+# Env setup
+
+- name: Set the locale
+  tags: environ
+  debconf: name=locales question='default_environment_locale' value='fr_FR.UTF-8' vtype='multiselect'
+  debconf: name=locales question='locales_to_be_generated' value='en_US.UTF-8 UTF-8, fr_FR.UTF-8 UTF-8' vtype='multiselect'
+  debconf: name=locales question='locales/locales_to_be_generated' value='fr_FR.UTF-8, UTF-8' vtype='multiselect'
+  when: ansible_distribution == 'Debian'
+
+- name: Set the timezone
+  tags: environ
+  debconf: name=tzdata question='tzdata/Zones/Etc' value='UTC' vtype='select'
+  debconf: name=tzdata question='tzdata/Areas' value='Europe' vtype='select'
+  debconf: name=tzdata question='tzdata/Zones/Europe' value='Paris' vtype='select'
+  when: ansible_distribution == 'Debian'
+
+- name: Disable IPv6 (need reboot)
+  tags: environ
+  lineinfile: dest=/etc/modprobe.d/blacklist line="blacklist ipv6" state="present" create="yes"
+  when: ansible_distribution == 'Debian' and disable_ipv6 == 'yes'
+
+- name: Enable IPv6 (need reboot)
+  tags: environ
+  lineinfile: dest=/etc/modprobe.d/blacklist line="blacklist ipv6" state="absent" create="yes"
+  when: ansible_distribution == 'Debian' and disable_ipv6 == 'no'
+
+
+# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
