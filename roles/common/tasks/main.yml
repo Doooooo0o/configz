@@ -1,5 +1,5 @@
 ---
-# Role commun à toutes les machines
+# Role commun a toutes les machines
 # vars: admin_ssh_keys, repositories, default_packages, ntp_server1, ntp_server2, description
 
 # Bootstrap if necessary (install python-apt)
@@ -55,7 +55,6 @@
   tags: ntp
   template: src=etc-ntp.conf.j2 dest=/etc/ntp.conf
 
-
 # Basic Shell & vim configuration
 
 - name: Custom .bashrc
@@ -83,11 +82,11 @@
 - name: Modify /root/.profile
   tags: custom
   copy: src=root-.profile dest=/root/.profile
-  when: initialize == True
+  when: initialize == 'True'
 - name: Add  basic README.root
   tags: custom
   copy: src=root-README.root dest=/root/README.root
-  when: initialize == True
+  when: initialize == 'True'
 
 # Env setup
 
@@ -108,12 +107,12 @@
 - name: Disable IPv6 (need reboot)
   tags: environ
   lineinfile: dest=/etc/modprobe.d/blacklist line="blacklist ipv6" state="present" create="yes"
-  when: ansible_distribution == 'Debian' and disable_ipv6 == 'yes'
+  when: disable_ipv6 == 'True'
 
 - name: Enable IPv6 (need reboot)
   tags: environ
   lineinfile: dest=/etc/modprobe.d/blacklist line="blacklist ipv6" state="absent" create="yes"
-  when: ansible_distribution == 'Debian' and disable_ipv6 == 'no'
+  when: disable_ipv6 == 'False'
 
 
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
