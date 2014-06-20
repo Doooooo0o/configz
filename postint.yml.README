@@ -1,4 +1,4 @@
- ## README configuration-initiale.yml ##
+ ## README postinst.yml ##
 
 #### Description ####
 Ce playbook permet de configurer basiquement une debian.
