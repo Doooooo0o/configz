@@ -9,4 +9,4 @@ mesg n
 echo
 echo "--- dernières modifications:"
 echo
-cat /root/README.localserver
+cat /root/README.root

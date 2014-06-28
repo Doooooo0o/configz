@@ -36,7 +36,6 @@
   when: disable_ipv6 is not defined
 
 # SSH
-
 - name: Deploy SSH keys
   tags: ssh_keys
   authorized_key: user=root key="{{item}}"
@@ -89,7 +88,6 @@
   when: initialize == 'True'
 
 # Env setup
-
 - name: Set the locale
   tags: environ
   debconf: name=locales question='default_environment_locale' value='fr_FR.UTF-8' vtype='multiselect'
@@ -107,12 +105,11 @@
 - name: Disable IPv6 (need reboot)
   tags: environ
   lineinfile: dest=/etc/modprobe.d/blacklist line="blacklist ipv6" state="present" create="yes"
-  when: disable_ipv6 == 'True'
+  when: disable_ipv6
 
 - name: Enable IPv6 (need reboot)
   tags: environ
   lineinfile: dest=/etc/modprobe.d/blacklist line="blacklist ipv6" state="absent" create="yes"
-  when: disable_ipv6 == 'False'
-
+  when: not disable_ipv6
 
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
