@@ -1,0 +1,13 @@
+- name: Downloading postfixadmin
+  get_url: url=http://downloads.sourceforge.net/project/postfixadmin/postfixadmin/postfixadmin-2.91/postfixadmin-2.91.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fpostfixadmin%2Ffiles%2F&ts=1412684802&use_mirror=softlayer-ams validate_certs=no dest=/tmp/postfixadmin-2.91.tar.gz
+
+- name: Untar the beast
+  unarchive: src=/tmp/postfixadmin-2.91.tar.gz dest=/root/postfixadmin/
+
+- name: Install packages
+  apt: pkg={{item}} state=installed update_cache=yes
+  tags:
+        - init
+  with_items: "{{ packages }}" 
+  ignore_errors: no
+# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:

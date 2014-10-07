@@ -15,6 +15,10 @@ packages:
   - spamassassin
   - razor
   - pyzor
+  - clamav-milter 
+  - clamav-unofficial-sigs 
+  - milter-greylist 
+  - spamass-milter
 files:
   - random
 
