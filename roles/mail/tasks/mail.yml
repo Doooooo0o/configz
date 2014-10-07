@@ -2,7 +2,6 @@
   fail: msg="Missing domain name for first Vdomain creation"
   when: domain is not defined
 
-
 - name: Install packages
   apt: pkg={{item}} state=installed update_cache=yes
   with_items: "{{ firstpkg }}" 
@@ -19,7 +18,6 @@
 - name: Install packages
   apt: pkg={{item}} state=installed update_cache=yes
   with_items: "{{ packages }}" 
-  #TODO automate mysql-server config
   ignore_errors: no
 
 - name: Downloading postfixadmin
@@ -27,10 +25,10 @@
 
 - name: Untar the beast
   unarchive: src=/tmp/postfixadmin-2.91.tar.gz dest=/etc/postfixadmin/
+
 - name: enable SASLAuthd on boot
   copy: src=etc-default-saslauthd dest=/etc/default/saslauthd
   notify: restart saslauthd
-  #TODO config handler
 
 - name: Adding facteur group and user
   shell: groupadd -g 3000 facteur
@@ -58,29 +56,82 @@
 
 - name: Copy postfixadmin config files
   template: src=config.inc.php.j2 dest=/etc/postfixadmin/ owner=root mode=655
+
 - name: Copy postfixadmin config files
   template: src=dbconfig.inc.php.j2 dest=/etc/postfixadmin/ owner=root mode=655
+
 - name: Copy postfix config files
   template: src=dynamicmaps.cf.j2 dest=/etc/postfix/ owner=root mode=655
+
 - name: Copy postfix config files
   template: src=main.cf.j2 dest=/etc/postfix/ owner=root mode=655
+
 - name: Copy postfix config files
   template: src=master.cf.j2 dest=/etc/postfix/ owner=root mode=655
+
 - name: Copy postfix config files
   template: src=mysql_relay_domains.cf.j2 dest=/etc/postfix/ owner=root mode=655
+
 - name: Copy postfix config files
   template: src=mysql_virtual_alias_maps.cf.j2 dest=/etc/postfix/ owner=root mode=655
+
 - name: Copy postfix config files
   template: src=mysql_virtual_mailbox_domains.cf.j2 dest=/etc/postfix/ owner=root mode=655
+
 - name: Copy postfix config files
   template: src=mysql_virtual_mailbox_maps.cf.j2 dest=/etc/postfix/ owner=root mode=655
+
 - name: Copy postfix config files
   template: src=postfix-files.j2 dest=/etc/postfix/ owner=root mode=655
+
 - name: Copy postfix config files
   template: src=postfix-script.j2 dest=/etc/postfix/ owner=root mode=655
+
 - name: Copy postfix config files
   template: src=post-install.j2 dest=/etc/postfix/ owner=root mode=655
+
 - name: Copy postfix config files
   template: src=root-postfix.sql.j2 dest=/etc/postfix/ owner=root mode=655
 
+- name: Check mysql
+  fail: msg="Missing variable rootpassword"
+  when: rootpassword is not defined
+
+- name: Install mysql packages
+  tags: mysql
+  apt: pkg={{item}} state=installed
+  with_items:
+    - mysql-server
+    - mysql-client
+    - python-mysqldb
+    - automysqlbackup
+
+- name: Set root mysql password
+  tags: mysql
+  mysql_user: name=root password={{rootpassword}} login_unix_socket=/var/run/mysqld/mysqld.sock
+  ignore_errors: yes
+
+- name: Second attempt ?
+  tags: mysql
+  debconf: name=mysql-server-5.5 question='mysql-server/root_password_again' value='{{rootpassword}}' vtype=password
+  debconf: name=mysql-server-5.5 question='mysql-server/root_password' value='{{rootpassword}}' vtype=password
+  debconf: name=mysql-server question='mysql-server/root_password_again' value='{{rootpassword}}' vtype=password
+  debconf: name=mysql-server question='mysql-server/root_password' value='{{rootpassword}}' vtype=password
+  debconf: name=mysql-server-5.5 question='mysql-server/root_password_again' value='{{rootpassword}}' vtype=text
+  debconf: name=mysql-server-5.5 question='mysql-server/root_password' value='{{rootpassword}}' vtype=text
+  debconf: name=mysql-server question='mysql-server/root_password_again' value='{{rootpassword}}' vtype=text
+  debconf: name=mysql-server question='mysql-server/root_password' value='{{rootpassword}}' vtype=text
+  ignore_errors: yes
+
+- name: Copy automysqlbackup config file
+  tags: mysql
+  copy: src=etc-default-automysqlbackup dest=/etc/default/automysqlbackup
+
+- name: Template .my.cnf
+  tags: mysql
+  template: src=root-my.cnf.j2 dest=/root/.my.cnf
+
+- name: Ensure 600 permissions on my.cnf
+  tags: mysql
+  file: path=/root/.my.cnf mode=600
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:

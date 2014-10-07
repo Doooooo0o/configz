@@ -12,8 +12,6 @@ packages:
   - dovecot-pop3d 
   - dovecot-mysql 
   - dovecot-lmtpd
-  - mysql-server
-  - mysql-client
   - amavis
   - spamassassin
   - razor
