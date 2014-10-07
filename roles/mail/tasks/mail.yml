@@ -24,6 +24,17 @@
 - name: Install packages
   apt: pkg={{item}} state=installed update_cache=yes
   with_items: "{{ packages }}" 
+  #TODO automate mysql-server config
   ignore_errors: no
 
+- name: enable SASLAuthd on boot
+  copy: src=etc-default-saslauthd dest=/etc/default/saslauthd
+  notify: restart saslauthd
+  #TODO config handler
+
+- name: Adding facteur group and user
+  shell: groupadd -g 3000 facteur
+
+- name: Adding facteur group and user
+  shell: useradd -d /home/facteur -m -u 3000 -g 3000 facteur
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
