@@ -1,3 +1,6 @@
+firstpkg:
+  - pwgen
+
 packages:
   - postfix
   - postfix-mysql 
@@ -19,6 +22,7 @@ packages:
   - clamav-unofficial-sigs 
   - milter-greylist 
   - spamass-milter
+  - pwgen
 files:
   - random
 

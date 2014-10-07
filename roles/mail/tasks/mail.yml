@@ -1,3 +1,7 @@
+- name: Check vars
+  fail: msg="Missing domain name for first Vdomain creation"
+  when: domain is not defined
+
 - name: Downloading postfixadmin
   get_url: url=http://downloads.sourceforge.net/project/postfixadmin/postfixadmin/postfixadmin-2.91/postfixadmin-2.91.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fpostfixadmin%2Ffiles%2F&ts=1412684802&use_mirror=softlayer-ams validate_certs=no dest=/tmp/postfixadmin-2.91.tar.gz
 
@@ -6,8 +10,20 @@
 
 - name: Install packages
   apt: pkg={{item}} state=installed update_cache=yes
-  tags:
-        - init
+  with_items: "{{ firstpkg }}" 
+  ignore_errors: no
+
+- name: Randomly generate a postfix database password
+  shell: pwgen -y -B -s 80 1
+  register: dbpassword
+
+- name: Randomly generate a root mysql password
+  shell: pwgen -y -B -s 80 1
+  register: rootpassword
+
+- name: Install packages
+  apt: pkg={{item}} state=installed update_cache=yes
   with_items: "{{ packages }}" 
   ignore_errors: no
+
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
