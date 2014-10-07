@@ -6,7 +6,7 @@ packages:
   - postfix-mysql 
   - libsasl2-modules 
   - libsasl2-modules-sql
-  - postfixadmin
+#  - postfixadmin
   - dovecot
   - dovecot-imapd 
   - dovecot-pop3d 
@@ -22,7 +22,31 @@ packages:
   - clamav-unofficial-sigs 
   - milter-greylist 
   - spamass-milter
-  - pwgen
+  - mailutils
+  - amavisd-new
+  - spamassassin
+  - clamav
+  - clamav-daemon
+  - zoo
+  - unzip
+  - bzip2
+  - arj
+  - nomarch
+  - lzop
+  - cabextract
+  - apt-listchanges
+  - libnet-ldap-perl
+  - libauthen-sasl-perl
+  - clamav-docs
+  - daemon
+  - libio-string-perl
+  - libio-socket-ssl-perl
+  - libnet-ident-perl
+  - zip
+  - libnet-dns-perl
+  - p7zip
+  - unrar-free
+
 files:
   - random
 

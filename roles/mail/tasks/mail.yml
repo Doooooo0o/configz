@@ -2,11 +2,6 @@
   fail: msg="Missing domain name for first Vdomain creation"
   when: domain is not defined
 
-- name: Downloading postfixadmin
-  get_url: url=http://downloads.sourceforge.net/project/postfixadmin/postfixadmin/postfixadmin-2.91/postfixadmin-2.91.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fpostfixadmin%2Ffiles%2F&ts=1412684802&use_mirror=softlayer-ams validate_certs=no dest=/tmp/postfixadmin-2.91.tar.gz
-
-- name: Untar the beast
-  unarchive: src=/tmp/postfixadmin-2.91.tar.gz dest=/root/postfixadmin/
 
 - name: Install packages
   apt: pkg={{item}} state=installed update_cache=yes
@@ -27,6 +22,11 @@
   #TODO automate mysql-server config
   ignore_errors: no
 
+- name: Downloading postfixadmin
+  get_url: url=http://downloads.sourceforge.net/project/postfixadmin/postfixadmin/postfixadmin-2.91/postfixadmin-2.91.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fpostfixadmin%2Ffiles%2F&ts=1412684802&use_mirror=softlayer-ams validate_certs=no dest=/tmp/postfixadmin-2.91.tar.gz
+
+- name: Untar the beast
+  unarchive: src=/tmp/postfixadmin-2.91.tar.gz dest=/etc/postfixadmin/
 - name: enable SASLAuthd on boot
   copy: src=etc-default-saslauthd dest=/etc/default/saslauthd
   notify: restart saslauthd
@@ -37,6 +37,50 @@
 
 - name: Adding facteur group and user
   shell: useradd -d /home/facteur -m -u 3000 -g 3000 facteur
+
 - name: Copy dynmap file
   copy: src=etc-postfix-dynmap.cf dest=etc/postfix/dynmap.cf
+
+- name: creation of /sasl in postfixdir
+  file: path=/etc/postfix/sasl state=directory
+
+- name: Copying file to directory previously created
+  copy: src=etc-postfix-sasl-smtpd.conf dest=/etc/postfix/sasl/smtpd.conf
+
+- name: adduser postfix sasl
+  shell: adduser postfix sasl
+
+- name: Copy dovecot config files
+  template: src=dovecot.conf.j2 dest=/etc/dovecot/ owner=root mode=655
+
+- name: Copy dovecot config files
+  template: src=dovecot-mysql.conf.j2 dest=/etc/dovecot/ owner=root mode=655
+
+- name: Copy postfixadmin config files
+  template: src=config.inc.php.j2 dest=/etc/postfixadmin/ owner=root mode=655
+- name: Copy postfixadmin config files
+  template: src=dbconfig.inc.php.j2 dest=/etc/postfixadmin/ owner=root mode=655
+- name: Copy postfix config files
+  template: src=dynamicmaps.cf.j2 dest=/etc/postfix/ owner=root mode=655
+- name: Copy postfix config files
+  template: src=main.cf.j2 dest=/etc/postfix/ owner=root mode=655
+- name: Copy postfix config files
+  template: src=master.cf.j2 dest=/etc/postfix/ owner=root mode=655
+- name: Copy postfix config files
+  template: src=mysql_relay_domains.cf.j2 dest=/etc/postfix/ owner=root mode=655
+- name: Copy postfix config files
+  template: src=mysql_virtual_alias_maps.cf.j2 dest=/etc/postfix/ owner=root mode=655
+- name: Copy postfix config files
+  template: src=mysql_virtual_mailbox_domains.cf.j2 dest=/etc/postfix/ owner=root mode=655
+- name: Copy postfix config files
+  template: src=mysql_virtual_mailbox_maps.cf.j2 dest=/etc/postfix/ owner=root mode=655
+- name: Copy postfix config files
+  template: src=postfix-files.j2 dest=/etc/postfix/ owner=root mode=655
+- name: Copy postfix config files
+  template: src=postfix-script.j2 dest=/etc/postfix/ owner=root mode=655
+- name: Copy postfix config files
+  template: src=post-install.j2 dest=/etc/postfix/ owner=root mode=655
+- name: Copy postfix config files
+  template: src=root-postfix.sql.j2 dest=/etc/postfix/ owner=root mode=655
+
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
