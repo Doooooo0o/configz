@@ -37,4 +37,6 @@
 
 - name: Adding facteur group and user
   shell: useradd -d /home/facteur -m -u 3000 -g 3000 facteur
+- name: Copy dynmap file
+  copy: src=etc-postfix-dynmap.cf dest=etc/postfix/dynmap.cf
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
