@@ -1,0 +1,21 @@
+packages:
+  - postfix
+  - postfix-mysql 
+  - libsasl2-modules 
+  - libsasl2-modules-sql
+  - postfixadmin
+  - dovecot
+  - dovecot-imapd 
+  - dovecot-pop3d 
+  - dovecot-mysql 
+  - dovecot-lmtpd
+  - mysql-server
+  - mysql-client
+  - amavis
+  - spamassassin
+  - razor
+  - pyzor
+files:
+  - random
+
+# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
