@@ -96,7 +96,7 @@
   template: src=root-postfix.sql dest=/etc/postfix/ owner=root mode=655
 
 - name: Create database for postfix
-  shell: mysql < /etc/postfix/postfix.sql
+  shell: mysql < /etc/postfix/root-postfix.sql
 
 - name: Config amavis
   copy: src=etc-amavis-conf.d-15-content_filter_mode  dest=/etc/amavis/conf.d/15-content_filter_mode

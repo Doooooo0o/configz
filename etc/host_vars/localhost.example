@@ -8,4 +8,5 @@ disable_ipv6: true
 domain: test.net
 mariadb_version: 10.0
 mysql_root_password: changeme
+mysql_host: localhost
 # vim: set textwidth=0 ft=yaml:

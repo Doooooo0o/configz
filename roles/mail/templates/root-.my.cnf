@@ -1,4 +1,5 @@
 [client] 
+host            = {{ mysql_host }}
 user            = root
 password        = {{ rootpassword }}
 
