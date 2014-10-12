@@ -4,6 +4,8 @@
   ignore_errors: true
   register: mysql
 
+- name: update apt-cache
+  apt:  update_cache=yes
 - name: Install prerequisites packages
   apt: pkg={{item}} state=installed install_recommends=no  update_cache=yes
   with_items: 
