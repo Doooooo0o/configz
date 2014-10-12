@@ -1,0 +1,6 @@
+# aaaaaaaaaaaaaa
+
+[client] 
+user            = root
+password        = {{ rootpassword }}
+
