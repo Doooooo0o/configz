@@ -22,7 +22,7 @@
 
 - name: Downloading postfixadmin
   get_url: url=http://downloads.sourceforge.net/project/postfixadmin/postfixadmin/postfixadmin-2.91/postfixadmin-2.91.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fpostfixadmin%2Ffiles%2F&ts=1412684802&use_mirror=softlayer-ams validate_certs=no dest=/tmp/postfixadmin-2.91.tar.gz
-- name: Creation of the right folder:
+- name: Creation of the right folder
   file: path=/etc/postfixadmin/ state=directory mode="u=rwx,g=rwx,o=rx" recurse=yes
 
 - name: Untar the beast
