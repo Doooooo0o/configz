@@ -5,7 +5,7 @@
   register: mysql
 
 - name: Install prerequisites packages
-  apt: pkg={{item}} state=installed install_recommends=no 
+  apt: pkg={{item}} state=installed install_recommends=no  update_cache=yes
   with_items: 
     - python-software-properties
     - php5-cli 
