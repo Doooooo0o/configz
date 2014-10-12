@@ -1,6 +1,6 @@
 ---
 - name: MySQL already installed ?
-  shell: dpkg -l|grep mysql|grep -iq serv
+  shell: dpkg -l|egrep "mysql|mariadb"|grep -iq serv
   ignore_errors: true
   register: mysql
 
