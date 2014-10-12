@@ -11,10 +11,6 @@
   shell: pwgen -y -B -s 80 1
   register: dbpassword
 
-#- name: Randomly generate a root mysql password
-#  shell: pwgen -y -B -s 80 1
-#  register: rootpassword
-
 - name: Install packages
   apt: pkg={{item}} state=installed update_cache=yes
   with_items: "{{ packages }}" 
@@ -97,45 +93,4 @@
 - name: Copy postfix config files
   template: src=root-postfix.sql.j2 dest=/etc/postfix/ owner=root mode=655
 
-#- name: Check mysql
-#  fail: msg="Missing variable rootpassword"
-#  when: rootpassword is not defined
-
-#- name: Install mysql packages
-#  tags: mysql
-#  apt: pkg={{item}} state=installed
-#  with_items:
-#    - mysql-server
-#    - mysql-client
-#    - python-mysqldb
-#    - automysqlbackup
-
-#- name: Set root mysql password
-#  tags: mysql
-#  mysql_user: name=root password={{rootpassword}} login_unix_socket=/var/run/mysqld/mysqld.sock
-#  ignore_errors: yes
-#
-#- name: Second attempt ?
-#  tags: mysql
-#  debconf: name=mysql-server-5.5 question='mysql-server/root_password_again' value='{{rootpassword}}' vtype=password
-#  debconf: name=mysql-server-5.5 question='mysql-server/root_password' value='{{rootpassword}}' vtype=password
-#  debconf: name=mysql-server question='mysql-server/root_password_again' value='{{rootpassword}}' vtype=password
-#  debconf: name=mysql-server question='mysql-server/root_password' value='{{rootpassword}}' vtype=password
-#  debconf: name=mysql-server-5.5 question='mysql-server/root_password_again' value='{{rootpassword}}' vtype=text
-#  debconf: name=mysql-server-5.5 question='mysql-server/root_password' value='{{rootpassword}}' vtype=text
-#  debconf: name=mysql-server question='mysql-server/root_password_again' value='{{rootpassword}}' vtype=text
-#  debconf: name=mysql-server question='mysql-server/root_password' value='{{rootpassword}}' vtype=text
-#  ignore_errors: yes
-#
-#- name: Copy automysqlbackup config file
-#  tags: mysql
-#  copy: src=etc-default-automysqlbackup dest=/etc/default/automysqlbackup
-#
-#- name: Template .my.cnf
-#  tags: mysql
-#  template: src=root-.my.cnf.j2 dest=/root/.my.cnf
-#
-#- name: Ensure 600 permissions on my.cnf
-#  tags: mysql
-#  file: path=/root/.my.cnf mode=600
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
