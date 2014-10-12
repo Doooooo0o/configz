@@ -44,9 +44,11 @@
 
 - name: Copying file to directory previously created
   copy: src=etc-postfix-sasl-smtpd.conf dest=/etc/postfix/sasl/smtpd.conf
+  notify: restart postfix
 
 - name: adduser postfix sasl
   shell: adduser postfix sasl
+  notify: restart dovecot
 
 - name: Copy dovecot config files
   template: src=dovecot.conf.j2 dest=/etc/dovecot/ owner=root mode=655
@@ -92,5 +94,32 @@
 
 - name: Copy postfix config files
   template: src=root-postfix.sql.j2 dest=/etc/postfix/ owner=root mode=655
+
+- name: Create database for postfix
+  shell: mysql < /etc/postfix/postfix.sql
+
+- name: Config amavis
+  copy: src=etc-amavis-conf.d-15-content_filter_mode  dest=/etc/amavis/conf.d/15-content_filter_mode
+
+- name: Config amavis
+  copy: src=etc-amavis-conf.d-50-user  dest=/etc/amavis/conf.d/50-user
+
+- name: Virus repository
+  shell:  mkdir /var/spool/virusmails 
+
+- name: chown
+  shell: chown amavis:amavis /var/spool/virusmails
+
+- name: update SA
+  shell: sa-update -D
+
+- name: Config SA
+  copy: src=etc-default-spamassassin  dest=/etc/default/spamassassin
+  notify: restart spamassassin
+
+- name: Config Postgrey
+  template: src=etc-default-postgrey dest=/etc/default/postgrey
+  notify: restart postgrey
+
 
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:

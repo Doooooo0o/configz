@@ -15,6 +15,7 @@ packages:
   - dovecot-core
   - dovecot-dbg
   - dovecot-gssapi
+  - postgrey
   - dovecot-imapd
   - dovecot-ldap
   - dovecot-lmtpd
