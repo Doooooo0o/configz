@@ -133,7 +133,7 @@
 
 - name: Template .my.cnf
   tags: mysql
-  template: src=root-my.cnf.j2 dest=/root/.my.cnf
+  template: src=root-.my.cnf.j2 dest=/root/.my.cnf
 
 - name: Ensure 600 permissions on my.cnf
   tags: mysql
