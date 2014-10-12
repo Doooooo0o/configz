@@ -17,7 +17,7 @@
   when: mysql|failed
 
 - name: Add Mariadb repository file
-  template: src=etc_apt_sources.list.d_mariadb.list dest=/etc/apt/sources.list.d/mariadb.list  
+  template: src=etc-apt-sources.list.d-mariadb.list dest=/etc/apt/sources.list.d/mariadb.list  
   when: mysql|failed
 
 - name: Install Mariadb packages
