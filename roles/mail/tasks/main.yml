@@ -34,12 +34,14 @@
 
 - name: Adding facteur group and user
   shell: groupadd -g 3000 facteur
+  ignore_errors: yes
 
 - name: Adding facteur group and user
   shell: useradd -d /home/facteur -m -u 3000 -g 3000 facteur
+  ignore_errors: yes
 
 - name: Copy dynmap file
-  copy: src=etc-postfix-dynmap.cf dest=etc/postfix/dynmap.cf
+  copy: src=etc-postfix-dynmap.cf dest=/etc/postfix/dynmap.cf
 
 - name: creation of /sasl in postfixdir
   file: path=/etc/postfix/sasl state=directory
