@@ -23,7 +23,7 @@
 - name: Install Mariadb packages
   apt: pkg={{item}} state=installed update_cache=yes
   with_items:
-    - mariadb-server-{{ mariadb_version | default(10) }}
+    - mariadb-server-{{ mariadb_version | default("10") }}
     - python-mysqldb
     - percona-toolkit
   when: mysql|failed
