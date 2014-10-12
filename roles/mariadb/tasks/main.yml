@@ -1,6 +1,7 @@
 ---
 - name: MySQL already installed ?
   shell: dpkg -l|grep mysql|grep -iq serv
+  ignore_errors: true
   register: mysql
 
 - name: Install prerequisites packages
