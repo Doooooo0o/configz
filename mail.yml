@@ -1,0 +1,11 @@
+---
+
+- name: Deployer et configurer un serveur mail complet 
+  hosts: all
+  user: root
+  gather_facts: yes
+
+  roles:
+    - mail
+
+# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
