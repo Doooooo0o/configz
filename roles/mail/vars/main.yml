@@ -7,11 +7,21 @@ packages:
   - libsasl2-modules 
   - libsasl2-modules-sql
 #  - postfixadmin
-  - dovecot
+  - dovecot-common
   - dovecot-imapd 
   - dovecot-pop3d 
   - dovecot-mysql 
   - dovecot-lmtpd
+  - dovecot-core
+  - dovecot-dbg
+  - dovecot-gssapi
+  - dovecot-imapd
+  - dovecot-ldap
+  - dovecot-lmtpd
+  - dovecot-managesieved
+  - dovecot-pop3d
+  - dovecot-sieve
+  - dovecot-antispam
   - amavis
   - spamassassin
   - razor
