@@ -77,6 +77,8 @@ smtpd_recipient_restrictions =
   reject_unauth_pipelining,
   reject_rbl_client bl.spamcop.net,
   reject_rbl_client allinone.bl.blocklist.de,
+  reject_rbl_client zen.spamhaus.org,
+  reject_rbl_client cbl.abuseat.org,
   reject_invalid_hostname
  
 smtpd_sasl_auth_enable = yes
