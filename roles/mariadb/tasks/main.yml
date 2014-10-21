@@ -1,4 +1,7 @@
 ---
+- name: MySQL already installed ?
+  shell: dpkg -l|grep mysql|grep -iq serv
+  register: mysql
 
 - name: Install prerequisites packages
   apt: pkg={{item}} state=installed install_recommends=no 
@@ -6,12 +9,15 @@
     - python-software-properties
     - php5-cli 
     - php5-mysql
+  when: mysql|failed
 
 - name: Add MariaDB repository Key
   apt_key: keyserver=keyserver.ubuntu.com id=0xcbcb082a1bb943db state=present 
+  when: mysql|failed
 
 - name: Add Mariadb repository file
   template: src=etc_apt_sources.list.d_mariadb.list dest=/etc/apt/sources.list.d/mariadb.list  
+  when: mysql|failed
 
 - name: Install Mariadb packages
   apt: pkg={{item}} state=installed update_cache=yes
@@ -19,18 +25,22 @@
     - mariadb-server-{{ mariadb_version | default(10) }}
     - python-mysqldb
     - percona-toolkit
+  when: mysql|failed
 
 - name: Set root mysql password
-  mysql_user: name=root password={{mysql_root_password}}
+  mysql_user: name=root password={{ mysql_root_password | default("changeme") }}
+  when: mysql|failed
 
 - name: File .my.cnf for root
   template: src={{item.src}} dest={{item.dest}}
   with_items : 
     - { src: root-.my.cnf , dest: /root/.my.cnf }
+  when: mysql|failed
 
 
 - name: Ensure 600 permissions on my.cnf
   file: path=/root/.my.cnf mode=600
+  when: mysql|failed
 
 
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
