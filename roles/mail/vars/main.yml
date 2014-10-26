@@ -1,0 +1,63 @@
+firstpkg:
+  - pwgen
+
+packages:
+  - postfix
+  - postfix-mysql 
+  - libsasl2-modules 
+  - libsasl2-modules-sql
+#  - postfixadmin
+  - dovecot-common
+  - dovecot-imapd 
+  - dovecot-pop3d 
+  - dovecot-mysql 
+  - dovecot-lmtpd
+  - dovecot-core
+  - dovecot-dbg
+  - dovecot-gssapi
+  - postgrey
+  - dovecot-imapd
+  - dovecot-ldap
+  - dovecot-lmtpd
+  - dovecot-managesieved
+  - dovecot-pop3d
+  - dovecot-sieve
+  - dovecot-antispam
+  - sasl2-bin
+  - amavis
+  - spamassassin
+  - razor
+  - pyzor
+  - clamav-milter 
+  - clamav-unofficial-sigs 
+  - milter-greylist 
+  - spamass-milter
+  - mailutils
+  - amavisd-new
+  - spamassassin
+  - clamav
+  - clamav-daemon
+  - zoo
+  - unzip
+  - bzip2
+  - arj
+  - nomarch
+  - lzop
+  - cabextract
+  - apt-listchanges
+  - libnet-ldap-perl
+  - libauthen-sasl-perl
+  - clamav-docs
+  - daemon
+  - libio-string-perl
+  - libio-socket-ssl-perl
+  - libnet-ident-perl
+  - zip
+  - libnet-dns-perl
+  - p7zip
+  - unrar-free
+
+files:
+  - random
+
+# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:

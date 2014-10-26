@@ -1,0 +1,19 @@
+
+- name: restart saslauthd
+  service: name=saslauthd state=restarted
+
+- name: restart mysql
+  service: name=mysql state=restarted
+
+- name: restart dovecot
+  service: name=dovecot state=restarted
+
+- name: restart postfix
+  service: name=postfix state=restarted
+
+- name: restart spamassassin
+  service: name=spamassassin state=restarted
+
+- name: restart postgrey
+  service: name=postgrey state=restarted
+# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:

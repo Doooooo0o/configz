@@ -1,0 +1,125 @@
+- name: Check vars
+  fail: msg="Missing domain name for first Vdomain creation"
+  when: domain is not defined
+
+- name: Install packages
+  apt: pkg={{item}} state=installed update_cache=yes
+  with_items: "{{ firstpkg }}" 
+  ignore_errors: no
+
+- name: Randomly generate a postfix database password
+  shell: pwgen -y -B -s 80 1
+  register: dbpassword
+
+- name: Install packages
+  apt: pkg={{item}} state=installed update_cache=yes
+  with_items: "{{ packages }}" 
+  ignore_errors: no
+
+- name: Downloading postfixadmin
+  get_url: url=http://downloads.sourceforge.net/project/postfixadmin/postfixadmin/postfixadmin-2.91/postfixadmin-2.91.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fpostfixadmin%2Ffiles%2F&ts=1412684802&use_mirror=softlayer-ams validate_certs=no dest=/tmp/postfixadmin-2.91.tar.gz
+- name: Creation of the right folder
+  file: path=/etc/postfixadmin/ state=directory mode=0755 recurse=yes
+
+- name: Untar the beast
+  unarchive: src=/tmp/postfixadmin-2.91.tar.gz dest=/etc/postfixadmin/
+
+- name: enable SASLAuthd on boot
+  copy: src=etc-default-saslauthd dest=/etc/default/saslauthd
+  notify: restart saslauthd
+
+- name: Adding facteur group and user
+  shell: groupadd -g 3000 facteur
+  ignore_errors: yes
+
+- name: Adding facteur group and user
+  shell: useradd -d /home/facteur -m -u 3000 -g 3000 facteur
+  ignore_errors: yes
+
+- name: Copy dynmap file
+  copy: src=etc-postfix-dynmap.cf dest=/etc/postfix/dynmap.cf
+
+- name: creation of /sasl in postfixdir
+  file: path=/etc/postfix/sasl state=directory
+
+- name: Copying file to directory previously created
+  copy: src=etc-postfix-sasl-smtpd.conf dest=/etc/postfix/sasl/smtpd.conf
+  notify: restart postfix
+
+- name: adduser postfix sasl
+  shell: adduser postfix sasl
+  notify: restart dovecot
+
+- name: Copy dovecot config files
+  template: src=dovecot.conf dest=/etc/dovecot/ owner=root mode=655
+
+- name: Copy dovecot config files
+  template: src=dovecot-mysql.conf dest=/etc/dovecot/ owner=root mode=655
+
+- name: Copy postfixadmin config files
+  template: src=config.inc.php dest=/etc/postfixadmin/ owner=root mode=655
+
+- name: Copy postfixadmin config files
+  template: src=dbconfig.inc.php dest=/etc/postfixadmin/ owner=root mode=655
+
+- name: Copy postfix config files
+  template: src=dynamicmaps.cf dest=/etc/postfix/ owner=root mode=655
+
+- name: Copy postfix config files
+  template: src=main.cf dest=/etc/postfix/ owner=root mode=655
+
+- name: Copy postfix config files
+  template: src=master.cf dest=/etc/postfix/ owner=root mode=655
+
+- name: Copy postfix config files
+  template: src=mysql_relay_domains.cf dest=/etc/postfix/ owner=root mode=655
+
+- name: Copy postfix config files
+  template: src=mysql_virtual_alias_maps.cf dest=/etc/postfix/ owner=root mode=655
+
+- name: Copy postfix config files
+  template: src=mysql_virtual_mailbox_domains.cf dest=/etc/postfix/ owner=root mode=655
+
+- name: Copy postfix config files
+  template: src=mysql_virtual_mailbox_maps.cf dest=/etc/postfix/ owner=root mode=655
+
+- name: Copy postfix config files
+  template: src=postfix-files dest=/etc/postfix/ owner=root mode=655
+
+- name: Copy postfix config files
+  template: src=postfix-script dest=/etc/postfix/ owner=root mode=655
+
+- name: Copy postfix config files
+  template: src=post-install dest=/etc/postfix/ owner=root mode=655
+
+- name: Copy postfix config files
+  template: src=root-postfix.sql dest=/etc/postfix/ owner=root mode=655
+
+- name: Create database for postfix
+  shell: mysql < /etc/postfix/root-postfix.sql
+
+- name: Config amavis
+  copy: src=etc-amavis-conf.d-15-content_filter_mode  dest=/etc/amavis/conf.d/15-content_filter_mode
+
+- name: Config amavis
+  copy: src=etc-amavis-conf.d-50-user  dest=/etc/amavis/conf.d/50-user
+
+- name: Virus repository
+  shell:  mkdir /var/spool/virusmails 
+
+- name: chown
+  shell: chown amavis:amavis /var/spool/virusmails
+
+- name: update SA
+  shell: sa-update -D
+
+- name: Config SA
+  copy: src=etc-default-spamassassin  dest=/etc/default/spamassassin
+  notify: restart spamassassin
+
+- name: Config Postgrey
+  template: src=etc-default-postgrey dest=/etc/default/postgrey
+  notify: restart postgrey
+
+
+# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
