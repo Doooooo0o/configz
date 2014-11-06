@@ -11,7 +11,7 @@
 ## above too.
 ##
 $dbuser='postfix';
-$dbpass='{{ dbpassword }}';
+$dbpass='{{ dbpassword.stdout }}';
 }
 }
 $basepath='';

@@ -33,7 +33,7 @@ $CONF['configured'] = true;
 // In order to setup Postfixadmin, you MUST specify a hashed password here.
 // To create the hash, visit setup.php in a browser and type a password into the field,
 // on submission it will be echoed out to you as a hashed value.
-$CONF['setup_password'] = '{{ dbpassword }}';
+$CONF['setup_password'] = '{{ dbpassword.stdout }}';
 }
 }
 
