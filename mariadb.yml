@@ -1,12 +1,11 @@
 ---
 
-- name: Deployer et configurer un serveur mail complet 
+- name: Deployer et configurer mariadb  
   hosts: all
   user: root
   gather_facts: yes
 
   roles:
-#    - mariadb
-    - mail
+    - mariadb
 
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
