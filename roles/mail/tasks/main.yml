@@ -92,6 +92,8 @@
 
 - name: Copy postfix config files
   template: src=root-postfix.sql dest=/etc/postfix/ owner=root mode=655
+- name: Copy postfix config files
+  template: src=smtpd.conf dest=/etc/postfix/sasl/smtpd.conf  owner=root mode=655 
 
 - name: Create database for postfix
   shell: mysql < /etc/postfix/root-postfix.sql
