@@ -1,4 +1,7 @@
 ### THIS FILE IS DEPLOYED BY ANSIBLE
+if [ -z "$INPUTRC" -a ! -f "$HOME/.inputrc" ]; then
+    INPUTRC=/etc/inputrc
+fi
 
 export LS_OPTIONS='--color=auto'
 eval "`dircolors`"
