@@ -1,4 +1,7 @@
 
+- name: restart amavis
+  service: name=amavis state=restarted
+
 - name: restart saslauthd
   service: name=saslauthd state=restarted
 

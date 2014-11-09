@@ -105,13 +105,12 @@
   copy: src=etc-amavis-conf.d-50-user  dest=/etc/amavis/conf.d/50-user
 
 - name: Virus repository
-  shell:  mkdir /var/spool/virusmails 
-
-- name: chown
-  shell: chown amavis:amavis /var/spool/virusmails
-
+  file: path=/var/spool/virusmails state=directory owner=amavis group=amavis
+     
 - name: update SA
   shell: sa-update -D
+  notify: restart amavis
+
 
 - name: Config SA
   copy: src=etc-default-spamassassin  dest=/etc/default/spamassassin
