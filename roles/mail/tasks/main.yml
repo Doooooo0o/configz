@@ -102,6 +102,12 @@
 - name: Config amavis
   copy: src=etc-amavis-conf.d-50-user  dest=/etc/amavis/conf.d/50-user
 
+- name: adding amavis to clamav group
+  shell: usermod amavis -a -G clamav
+
+- name: setting right perms to amavis homedir
+  shell: chmod g+rx /var/lib/amavis
+
 - name: Virus repository
   file: path=/var/spool/virusmails state=directory owner=amavis group=amavis
      
@@ -133,6 +139,7 @@
 
 - name: Copy postfixadmin config files
   template: src=config.inc.php dest=/etc/postfixadmin/ owner=root mode=655
+
 
 - name: TODO
   debug: msg="Now go to http://{{ domain }}/postfixadmin and follow the instructions documentation is here http://sourceforge.net/p/postfixadmin/wiki/Home/"
