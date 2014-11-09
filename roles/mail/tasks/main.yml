@@ -104,6 +104,8 @@
 
 - name: adding amavis to clamav group
   shell: usermod amavis -a -G clamav
+- name: Vice versa
+  shell: usermod clamav -a -G amavis
 
 - name: setting right perms to amavis homedir
   shell: chmod g+rx /var/lib/amavis
