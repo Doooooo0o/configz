@@ -56,8 +56,6 @@
 - name: Copy dovecot config files
   template: src=dovecot-mysql.conf dest=/etc/dovecot/ owner=root mode=655
 
-- name: Copy postfixadmin config files
-  template: src=config.inc.php dest=/etc/postfixadmin/ owner=root mode=655
 
 - name: Copy postfixadmin config files
   template: src=dbconfig.inc.php dest=/etc/postfixadmin/ owner=root mode=655
@@ -132,4 +130,10 @@
 - name: Chowning to the rightful user
   shell: chown -R www-data. /usr/share/postfixadmin/
   notify: restart apache 
+
+- name: Copy postfixadmin config files
+  template: src=config.inc.php dest=/etc/postfixadmin/ owner=root mode=655
+
+- name: TODO
+  debug: msg="Now go to http://{{ domain }}/postfixadmin and follow the instructions documentation is here http://sourceforge.net/p/postfixadmin/wiki/Home/"
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
