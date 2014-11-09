@@ -56,7 +56,6 @@
 - name: Copy dovecot config files
   template: src=dovecot-mysql.conf dest=/etc/dovecot/ owner=root mode=655
 
-
 - name: Copy postfixadmin config files
   template: src=dbconfig.inc.php dest=/etc/postfixadmin/ owner=root mode=655
 
@@ -92,8 +91,16 @@
 
 - name: Copy postfix config files
   template: src=root-postfix.sql dest=/etc/postfix/ owner=root mode=655
+
 - name: Copy postfix config files
   template: src=smtpd.conf dest=/etc/postfix/sasl/smtpd.conf  owner=root mode=655 
+  notify: restart postfix
+
+- name: Autosigned cert
+  command: openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=FR/ST=RA/L=Somewhere/O=Overtherainbow/CN={{ domain }}" -keyout /etc/ssl/mail.key -out /etc/ssl/mail.crt
+
+- name: ca_bundle
+  get_url: url=http://www.startssl.com/certs/ca-bundle.crt mode=0644
 
 - name: Create database for postfix
   shell: mysql < /etc/postfix/root-postfix.sql
@@ -120,7 +127,6 @@
   notify: restart amavis
   ignore_errors: yes
 
-
 - name: Config SA
   copy: src=etc-default-spamassassin  dest=/etc/default/spamassassin
   notify: restart spamassassin
@@ -143,9 +149,9 @@
 
 - name: Copy postfixadmin config files
   template: src=config.inc.php dest=/etc/postfixadmin/ owner=root mode=655
+
 - name: To usr share equally
   template: src=config.inc.php dest=/usr/share/postfixadmin/ owner=www-data mode=655
-
 
 - name: TODO
   debug: msg="Now go to http://{{ domain }}/postfixadmin and follow the instructions documentation is here http://sourceforge.net/p/postfixadmin/wiki/Home/"
