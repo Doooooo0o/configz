@@ -121,5 +121,9 @@
   template: src=etc-default-postgrey dest=/etc/default/postgrey
   notify: restart postgrey
 
+- name: Install postfixadmin
+  apt: pkg={{item}} state=installed update_cache=no install_recommends=yes
+  with_items: "{{ postfixadmin }}"
+  ignore_errors: no
 
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
