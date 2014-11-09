@@ -126,4 +126,10 @@
   with_items: "{{ postfixadmin }}"
   ignore_errors: no
 
+- name: Update old postfixadmin with new one
+  shell: rsync -aP /etc/postfixadmin/postfixadmin-2.91/* /usr/share/postfixadmin/
+
+- name: Chowning to the rightful user
+  shell: chown -R www-data. /usr/share/postfixadmin/
+  notify: restart apache 
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:

@@ -62,5 +62,23 @@ files:
 
 postfixadmin:
     - postfixadmin
+    - libc-client2007e
+    - postfixadmin
+    - dbconfig-common
+    - libapr1
+    - libapache2-mod-php5
+    - libaprutil1-ldap
+    - apache2-mpm-prefork
+    - apache2-utils
+    - apache2
+    - apache2.2-common
+    - libaprutil1-dbd-sqlite3
+    - mlock
+    - apache2.2-bin
+    - php5-imap
+    - wwwconfig-common
+    - libaprutil1
+    - php5
+    - rsync
 
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
