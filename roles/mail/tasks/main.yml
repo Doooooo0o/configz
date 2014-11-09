@@ -139,6 +139,8 @@
 
 - name: Copy postfixadmin config files
   template: src=config.inc.php dest=/etc/postfixadmin/ owner=root mode=655
+- name: To usr share equally
+  template: src=config.inc.php dest=/usr/share/postfixadmin/ owner=www-data mode=655
 
 
 - name: TODO
