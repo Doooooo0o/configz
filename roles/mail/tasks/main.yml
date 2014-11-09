@@ -9,7 +9,7 @@
 
 - name: Randomly generate a postfix database password
   shell: pwgen -y -B -s 80 1
-  register: dbpassword
+  register: dbpassword.stdout
 
 - name: Install packages
   apt: pkg={{item}} state=installed update_cache=yes
