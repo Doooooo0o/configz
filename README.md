@@ -8,10 +8,13 @@ roles
 
 * common
  * provides common configuration
+ * https://github.com/nojhan/liquidprompt <3
 * mail
  * provides a mail service for a given domain name and the vdomain capability for other domains.
+ * **Note** : This role starts in order : common, mariadb, and mail. If you don't want one of them, please comment out.
+ * **Note2** : If you already have a SQL server, **it wont erase the original config**, but it needs a ``~/.my.cnf``.
 * mariadb
- * provides a mariadb lambda server peered on 127.0.0.1:3306 with root mysql password on ``~/.my.cnf`` 
+ * provides a mariadb lambda server peered on ``127.0.0.1:3306`` with ``root`` MySQL password on ``~/.my.cnf`` 
 
 example host file
 ===== 
