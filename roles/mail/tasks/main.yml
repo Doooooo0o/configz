@@ -110,6 +110,7 @@
 - name: update SA
   shell: sa-update -D
   notify: restart amavis
+  ignore_errors: yes
 
 
 - name: Config SA
