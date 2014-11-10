@@ -100,7 +100,7 @@
   command: openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=FR/ST=RA/L=Somewhere/O=Overtherainbow/CN={{ domain }}" -keyout /etc/ssl/mail.key -out /etc/ssl/mail.crt
 
 - name: ca_bundle - gettint it from startssl
-  get_url: url=http://www.startssl.com/certs/ca-bundle.crt mode=0644
+  get_url: url=http://www.startssl.com/certs/ca-bundle.crt dest=/etc/ssl/ca-bundle.crt mode=0644
 
 - name: Create database for postfix
   shell: mysql < /etc/postfix/root-postfix.sql
