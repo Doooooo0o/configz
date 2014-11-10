@@ -6,15 +6,22 @@ Yet another ansible's playbook repository
 roles
 ======
 
-* common
- * provides common configuration
+* Common
+ * provides **common** configuration
  * https://github.com/nojhan/liquidprompt <3
-* mail
- * provides a mail service for a given domain name and the vdomain capability for other domains.
+* Mail
+ * provides a complete **mail** server for a given domain name and the vdomain capability for other domains.
  * **Note** : This role starts in order : common, mariadb, and mail. If you don't want one of them, please comment out.
  * **Note2** : If you already have a SQL server, **it wont erase the original config**, but it needs a ``~/.my.cnf``.
-* mariadb
- * provides a mariadb lambda server peered on ``127.0.0.1:3306`` with ``root`` MySQL password on ``~/.my.cnf`` 
+ * **TODO** : 
+     * Razor/Pyzor
+     * Roundcube
+     * Simplify template copy
+     * Postgrey
+* MariaDB
+ * provides a lambda **MariaDB** server peered on ``127.0.0.1:3306`` with ``root`` MySQL password on ``~/.my.cnf``
+* ownCloud
+ * provides a simple instance of **ownCloud**, with ``NGINX, PHP5-FPM, and MariaDB``
 
 example host file
 ===== 

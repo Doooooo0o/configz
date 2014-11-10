@@ -1,0 +1,14 @@
+---
+
+- name: Deployer et configurer un serveur ownCloud sous NGINX + PHP5-FPM + MariaDB
+  hosts: all
+  user: root
+  gather_facts: yes
+
+
+  roles:
+       - common
+       - mariadb
+       - nginx
+       - owncloud
+
