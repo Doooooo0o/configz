@@ -59,6 +59,10 @@
   template: src=etc-php5-fpm-pool.d-www.conf.j2 dest=/etc/php5/fpm/pool.d/www.conf
   tags: owncloud
   notify: restart php5-fpm
+- name: Config PHP5-fpm ini file
+  template: src=php.ini.j2 dest=/etc/php5/fpm/php.ini
+  tags: owncloud
+  notify: restart php5-fpm
 
 - name: Import database template
   tags: 
