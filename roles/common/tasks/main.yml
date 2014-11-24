@@ -8,30 +8,26 @@
   tags: bootstrap
   raw: python -c "import apt" || DEBIAN_FRONTEND=noninteractive apt-get --force-yes -y install python-apt
   when: ansible_distribution == 'Debian'
-  
+
 # Check mandatory variables
 
-- name: Check vars 
+- name: Check vars
   fail: msg="Missing variable admin_ssh_keys"
   when: admin_ssh_keys is not defined
 
-- name: Check vars 
+- name: Check vars
   fail: msg="Missing variable default_packages_debian"
   when: default_packages_debian is not defined
 
-- name: Check vars 
+- name: Check vars
   fail: msg="Missing variable description"
   when: description is not defined
 
-- name: Check vars 
-  fail: msg="Missing variable ntp_server1"
-  when: ntp_server1 is not defined
+- name: Check vars
+  fail: msg="Missing variable ntp_servers"
+  when: ntp_servers is not defined
 
-- name: Check vars 
-  fail: msg="Missing variable ntp_server2"
-  when: ntp_server2 is not defined
-
-- name: Check vars 
+- name: Check vars
   fail: msg="Missing variable disable_ipv6"
   when: disable_ipv6 is not defined
 
@@ -46,7 +42,7 @@
 
 - name: Install default packages Debian.
   apt: pkg={{item}} state=installed
-  with_items: "{{ default_packages_debian }}" 
+  with_items: "{{ default_packages_debian }}"
   when: ansible_distribution == 'Debian'
 
 # Configure NTP
@@ -57,21 +53,18 @@
 
 # Basic Shell & vim configuration
 
-- name: Custom .bashrc
-  tags: custom
-  copy: src=root-.bashrc dest=/root/.bashrc
-- name: Custom .vimrc
-  tags: custom
-  copy: src=root-.vimrc dest=/root/.vimrc
-- name: Custom .inputrc
-  tags: custom
-  copy: src=root-.inputrc dest=/root/.inputrc
 - name: Create .vim/colors
   tags: custom
   file: path=/root/.vim/colors state=directory
-- name: Wombat vim colors theme is awesome
+
+- name: Custom .bashrc, .vimrc, .inputrc and Wombat vim colors theme
   tags: custom
-  copy: src=root-.vim-colors-wombat.vim dest=/root/.vim/colors/wombat.vim
+  copy: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: 'root-.bashrc', dest: '/root/.bashrc' }
+    - { src: 'root-.vimrc', dest: '/root/.vimrc' }
+    - { src: 'root-.inputrc', dest: '/root/.inputrc' }
+    - { src: 'root-.vim-colors-wombat.vim', dest: '/root/.vim/colors/wombat.vim' }
 
 # Set motd and README.root
 
@@ -79,13 +72,12 @@
   tags: custom
   template: src=etc-motd.j2 dest=/etc/motd
 
-- name: Modify /root/.profile
+- name: Modify /root/.profile, Add basic README.root
   tags: custom
-  copy: src=root-.profile dest=/root/.profile
-  when: initialize == 'True'
-- name: Add  basic README.root
-  tags: custom
-  copy: src=root-README.root dest=/root/README.root
+  copy: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: 'root-.profile', dest: '/root/.profile' }
+    - { src: 'root-README.root', dest: '/root/README.root' }
   when: initialize == 'True'
 
 # Env setup
