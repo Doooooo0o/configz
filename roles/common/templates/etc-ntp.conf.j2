@@ -6,12 +6,12 @@ statistics loopstats peerstats clockstats
 filegen loopstats file loopstats type day enable
 filegen peerstats file peerstats type day enable
 filegen clockstats file clockstats type day enable
-server {{ ntp_server1 }}
-server {{ ntp_server2 }}
+{% for server in ntp_servers %}
+server {{ server }}
+restrict {{ server }} nomodify nopeer
+restrict {{ server }} nomodify nopeer
+{% endfor %}
 restrict default ignore
 restrict -6 default ignore
 restrict 127.0.0.1
 restrict ::1
-restrict {{ ntp_server1 }} nomodify nopeer
-restrict {{ ntp_server2 }} nomodify nopeer
-
