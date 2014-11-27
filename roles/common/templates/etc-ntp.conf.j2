@@ -9,7 +9,6 @@ filegen clockstats file clockstats type day enable
 {% for server in ntp_servers %}
 server {{ server }}
 restrict {{ server }} nomodify nopeer
-restrict {{ server }} nomodify nopeer
 {% endfor %}
 restrict default ignore
 restrict -6 default ignore
