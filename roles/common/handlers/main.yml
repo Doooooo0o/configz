@@ -40,5 +40,8 @@
 - name: apt-update
   command: apt-get update
 
-# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
 
+- name: update timezone
+  command: dpkg-reconfigure --frontend noninteractive tzdata
+
+# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
