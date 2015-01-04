@@ -21,11 +21,11 @@
     - php5-pgsql
     - php5-tidy
 
-#- name: Import database user template
-#  template: src=root-wallabag.sql.j2 dest=/root/wallabag.sql
-#
-#- name: Import sql file for account and db creation
-#  shell: mysql < /root/wallabag.sql
+- name: Import database user template
+  template: src=root-wallabag.sql.j2 dest=/root/wallabag.sql
+
+- name: Import sql file for account and db creation
+  shell: mysql < /root/wallabag.sql
 
 
 - name: Import wallabag sql
