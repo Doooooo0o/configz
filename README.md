@@ -9,6 +9,18 @@ roles
 * Common
  * provides **common** configuration
  * https://github.com/nojhan/liquidprompt <3
+* Wallabag
+ * provides **Wallabag** configuration
+ * Imported with <3 from https://github.com/al3x/sovereign/
+ * **Not yet READY**
+* Prosody
+ * Provides XMPP (Jabber) server
+ * Imported with <3 from https://github.com/al3x/sovereign/
+ * **Not yet READY**
+* IRCBouncer
+ * Provides a ZNC Config
+ * Imported with <3 from https://github.com/al3x/sovereign/
+ * **Not yet READY**
 * Mail
  * provides a complete **mail** server for a given domain name and the vdomain capability for other domains.
  * **Note** : This role starts in order : common, mariadb, and mail. If you don't want one of them, please comment out.
