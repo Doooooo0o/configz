@@ -21,22 +21,16 @@
     - php5-pgsql
     - php5-tidy
 
-- name: Create database user for wallabag
-  postgresql_user: login_host=localhost
-                   login_user={{ db_admin_username }}
-                   login_password="{{ db_admin_password }}"
-                   name={{ wallabag_db_username }}
-                   password="{{ wallabag_db_password }}"
-                   state=present
+#- name: Import database user template
+#  template: src=root-wallabag.sql.j2 dest=/root/wallabag.sql
+#
+#- name: Import sql file for account and db creation
+#  shell: mysql < /root/wallabag.sql
 
-- name: Create database for wallabag
-  postgresql_db: login_host=localhost
-                 login_user={{ db_admin_username }}
-                 login_password="{{ db_admin_password }}"
-                 name={{ wallabag_db_database }}
-                 state=present
-                 owner={{ wallabag_db_username }}
-  notify: import wallabag sql
+
+- name: Import wallabag sql
+  shell: mysql {{ wallabag_db_database }} < /var/www/wallabag/install/mysql.sql
+  notify: remove install folder 
 
 - name: Build Composer
   shell: curl -sS https://getcomposer.org/installer | php
