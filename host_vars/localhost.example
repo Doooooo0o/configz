@@ -35,7 +35,7 @@ prosody_virtual_domain: test.net
 prosody_accounts: admin@test.net
 
 # wallabag
-wallabag_version: 1.7.1
+wallabag_version: 1.8.1
 wallabag_domain: "read.test.net"
 wallabag_salt: (required)
 wallabag_db_username: wallabag
