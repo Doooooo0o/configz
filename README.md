@@ -64,6 +64,13 @@ prosody_admin: "admin@test.net"
 prosody_virtual_domain: "test.net"
 prosody_accounts: admin@test.net
 
+#Wallabag
+wallabag_version: 1.7.1
+wallabag_domain: "read.{{ domain }}"
+# wallabag_salt: (required)
+wallabag_db_username: wallabag
+# wallabag_db_password: (required)
+wallabag_db_database: wallabag
 # vim: set textwidth=0 ft=yaml:
 
 ```
