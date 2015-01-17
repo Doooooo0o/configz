@@ -58,6 +58,13 @@ ntp_servers:
   - 2.pool.ntp.org
 disable_ipv6: true
 
+# Update
+deb_packages_to_update: 
+  - apache2
+
+centos_packages_to_update:
+  - httpd
+
 # Mail
 domain: test.net
 
