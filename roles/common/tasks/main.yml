@@ -40,7 +40,7 @@
 
 - name: Install default packages Debian.
   apt: pkg={{item}} state=latest update_cache=yes
-  with_items: "{{ default_packages_debian }}" 
+  with_items: default_packages_debian 
   when: ansible_distribution == 'Debian'
 
 # Configure NTP
