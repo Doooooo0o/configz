@@ -1,0 +1,17 @@
+---
+
+- name: apt-get update
+  tags: normal
+  apt: update_cache=yes
+  ignore_errors: no
+  when: ansible_distribution == 'Debian'
+
+- name: apt-get upgrade (safe)
+  tags: normal
+  apt: upgrade=safe # http://docs.ansible.com/apt_module.html
+  when: ansible_distribution == 'Debian'
+
+- name: yum update
+  tags: normal
+  yum: name=* state=latest
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'

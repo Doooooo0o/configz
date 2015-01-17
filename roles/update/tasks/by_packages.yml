@@ -1,0 +1,15 @@
+---
+
+- name: debian update package
+  tags: packages
+  apt: pkg={{item}} state=latest update_cache=yes
+  with_items: deb_packages_to_update
+  when: ansible_distribution == 'Debian'
+
+
+- name: centos update packages
+  tags: packages
+  yum: name={{item}} state=latest update_cache=yes
+  with_items: yum_packages_to_update
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
+

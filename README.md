@@ -9,6 +9,10 @@ roles
 * Common
  * provides **common** configuration
  * https://github.com/nojhan/liquidprompt <3
+* Update
+ * allow install all update on  hosts (tag normal)
+ * allow update specific packages from list (tags packages)
+   * use host_vars, group_vars or default vars to update packages list
 * Wallabag
  * provides **Wallabag** configuration
  * Imported with <3 from https://github.com/al3x/sovereign/

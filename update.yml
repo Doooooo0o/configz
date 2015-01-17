@@ -1,0 +1,13 @@
+---
+
+- name: Update host --- tags - grsec, init, normal
+  hosts: all
+  user: root
+  gather_facts: yes
+  serial: 1
+  max_fail_percentage: 1
+           
+  
+  roles:
+    - role: update
+  

@@ -1,0 +1,12 @@
+---
+
+- include: normal.yml
+- include: by_packages.yml
+
+- name: ldconfig
+  tags:
+    - normal
+    - packages
+    - ldconfig
+  shell: ldconfig
+

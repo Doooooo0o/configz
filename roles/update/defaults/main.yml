@@ -1,0 +1,7 @@
+---
+
+deb_packages_to_update:
+  - wget
+
+centos_packages_to_update:
+  - vim
