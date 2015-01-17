@@ -1,0 +1,78 @@
+---
+      
+- name: Install ownCloud dependencies
+  apt: pkg={{item}} state=installed update_cache=no
+  tags: owncloud
+  with_items: "{{ packages }}" 
+  ignore_errors: no
+
+- name: unlink default vhost nginx
+  tags: owncloud
+  shell: unlink /etc/nginx/sites-enabled/default
+  ignore_errors: yes
+
+- name: Get ownCloud
+  tags:
+      - update
+      - owncloud
+  get_url: url=https://download.owncloud.org/community/owncloud-latest.tar.bz2 validate_certs=no dest=/root/owncloud-latest.tar.bz2
+
+- name: Creation of the right folder
+  tags: owncloud
+  file: path=/etc/nginx/ssl/ state=directory recurse=yes
+
+- name: create self-signed SSL cert
+  command: openssl req -new -nodes -x509 -subj "/C=FR/ST=SomeWhere/L=OverTheRainBow/O=OwnCloud/CN=owncloud.{{ domain }}" -days 3650 -keyout /etc/nginx/ssl/owncloud.key -out /etc/nginx/ssl/owncloud.crt -extensions v3_ca creates=/etc/nginx/ssl/owncloud.crt
+  tags: owncloud
+  notify: restart nginx
+
+- name: Creation of the right folder
+  tags: owncloud
+  file: path=/var/www/owncloud/ state=directory recurse=yes
+
+- name: Untar
+  tags: 
+    - update
+    - owncloud
+  shell: tar xvf /root/owncloud-latest.tar.bz2 -C /var/www/owncloud/
+  ignore_errors: no
+
+- name: Chown
+  tags: 
+    - update
+    - owncloud
+  shell: chown -R www-data. /var/www/
+
+- name: Randomly generate an ownCloud database password
+  shell: pwgen -y -B -s 80 1 
+  tags: 
+      - owncloud
+  register: dbpassword
+
+
+- name: Config nginx
+  template: src=etc-nginx-sites-enabled-owncloud.j2 dest=/etc/nginx/sites-enabled/owncloud
+  tags: owncloud
+  notify: restart nginx
+
+- name: Config PHP5-fpm
+  template: src=etc-php5-fpm-pool.d-www.conf.j2 dest=/etc/php5/fpm/pool.d/www.conf
+  tags: owncloud
+  notify: restart php5-fpm
+- name: Config PHP5-fpm ini file
+  template: src=php.ini.j2 dest=/etc/php5/fpm/php.ini
+  tags: owncloud
+  notify: restart php5-fpm
+
+- name: Import database template
+  tags: 
+      - owncloud
+  template: src=root-ownclouddb.sql.j2 dest=/root/ownclouddb.sql
+
+- name: Import sql file for account and db creation
+  tags: 
+      - owncloud
+  shell: mysql < /root/ownclouddb.sql
+  notify: restart php5-fpm
+
+#vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:

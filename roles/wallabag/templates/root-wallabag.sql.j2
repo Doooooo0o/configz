@@ -1,0 +1,5 @@
+CREATE USER 'wallabag'@'localhost' IDENTIFIED BY '{{ wallabag_db_password }}';
+GRANT USAGE ON * . * TO 'wallabag'@'localhost' IDENTIFIED BY '{{ wallabag_db_password }}' WITH MAX_QUERIES_PER_HOUR 0
+MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0 ;
+CREATE DATABASE IF NOT EXISTS `wallabag` ;
+GRANT ALL PRIVILEGES ON `wallabag` . * TO 'wallabag'@'localhost';

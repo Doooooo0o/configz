@@ -1,0 +1,73 @@
+- name: Determine whether wallabag is configured
+  stat: path=/var/www/wallabag/inc/poche/config.inc.php
+  register: wallabag_config
+
+- name: Clone wallabag
+  git: repo=https://github.com/wallabag/wallabag.git
+       dest=/var/www/wallabag
+       version={{ wallabag_version }}
+       accept_hostkey=yes
+
+- name: Remove wallabag 'install' directory if its configuration file is there
+  file: name=/var/www/wallabag/install state=absent
+  when: wallabag_config.stat.exists == True
+
+- name: Install wallabag dependencies
+  apt: pkg={{ item }} state=present
+  with_items:
+    - php5
+    - php5-curl
+    - php5-mcrypt
+    - php5-pgsql
+    - php5-tidy
+
+- name: Import database user template
+  template: src=root-wallabag.sql.j2 dest=/root/wallabag.sql
+
+- name: Import sql file for account and db creation
+  shell: mysql < /root/wallabag.sql
+
+
+- name: Import wallabag sql
+  shell: mysql {{ wallabag_db_database }} < /var/www/wallabag/install/mysql.sql
+  notify: remove install folder 
+
+- name: Build Composer
+  shell: curl -sS https://getcomposer.org/installer | php
+         chdir=/root
+         creates=/root/composer.phar
+
+- name: Initialize composer
+  command: php /root/composer.phar install
+           chdir=/var/www/wallabag
+           creates=/var/www/wallabag/vendor/autoload.php
+
+- name: Set wallabag permissions
+  file: owner=www-data
+        group=www-data
+        path=/var/www/wallabag
+        recurse=yes
+        state=directory
+
+- name: Create the configuration file
+  template: src=var_www_wallabag_inc_poche_config.inc.php.j2
+            dest=/var/www/wallabag/inc/poche/config.inc.php
+            owner=www-data
+            group=www-data
+
+- name: Rename existing Apache wallabag virtualhost
+  command: mv /etc/apache2/sites-available/wallabag /etc/apache2/sites-available/wallabag.conf removes=/etc/apache2/sites-available/wallabag
+
+- name: Remove old sites-enabled/wallabag symlink (new one will be created by a2ensite)
+  command: rm /etc/apache2/sites-enabled/wallabag removes=/etc/apache2/sites-enabled/wallabag
+
+- name: Configure the Apache HTTP server for wallabag
+  template: src=etc_apache2_sites-available_wallabag.j2
+            dest=/etc/apache2/sites-available/wallabag.conf
+            owner=root
+            group=root
+
+- name: Enable the wallabag site
+  command: a2ensite wallabag.conf
+           creates=/etc/apache2/sites-enabled/wallabag.conf
+  notify: restart apache

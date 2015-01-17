@@ -1,0 +1,23 @@
+---
+- name: Install default packages Debian.
+  apt: pkg={{item}} state=installed install_recommends=no
+  with_items:
+      - nginx
+      - nginx-common
+      - nginx-full
+      - php5-fpm
+
+- name: Copy nginx.conf
+  tags: nginx
+  copy: src=etc-nginx-nginx.conf dest=/etc/nginx/nginx.conf
+
+- name: Copy php5/fpm/pool.d/www-data.conf
+  tags: nginx
+  copy: src=etc-php5-fpm-pool.d-www-data.conf dest=/etc/php5/fpm/pool.d/www-data.conf
+
+- name: Delete the www.conf template
+  tags: nginx
+  file: path=etc/php5/fpm/pool.d/www.conf state=absent
+  notify: restart nginx
+
+# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:

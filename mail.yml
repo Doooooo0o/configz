@@ -6,6 +6,7 @@
   gather_facts: yes
 
   roles:
+    - common
     - mariadb
     - mail
 

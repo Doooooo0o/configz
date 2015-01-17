@@ -1,0 +1,13 @@
+---
+# handlers du role nginx
+
+- name: reload nginx
+  service: name=nginx state=reloaded
+- name: restart nginx
+  service: name=nginx state=restarted
+- name: start nginx
+  service: name=nginx state=started
+- name: stop nginx
+  service: name=nginx state=stopped  
+# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
+

@@ -2,7 +2,7 @@
   fail: msg="Missing domain name for first Vdomain creation"
   when: domain is not defined
 
-- name: Install packages
+- name: Install pwgen
   apt: pkg={{item}} state=installed update_cache=yes
   with_items: "{{ firstpkg }}" 
   ignore_errors: no
@@ -11,7 +11,7 @@
   shell: pwgen -y -B -s 80 1
   register: dbpassword
 
-- name: Install packages
+- name: Install necessary packages for postfix standalone
   apt: pkg={{item}} state=installed update_cache=yes
   with_items: "{{ packages }}" 
   ignore_errors: no
@@ -21,7 +21,7 @@
 - name: Creation of the right folder
   file: path=/etc/postfixadmin/ state=directory mode=0755 recurse=yes
 
-- name: Untar the beast
+- name: Untar the pfxadmin
   unarchive: src=/tmp/postfixadmin-2.91.tar.gz dest=/etc/postfixadmin/
 
 - name: enable SASLAuthd on boot
@@ -50,70 +50,84 @@
   shell: adduser postfix sasl
   notify: restart dovecot
 
-- name: Copy dovecot config files
+- name: Copy dovecot config files - dovecot.conf
   template: src=dovecot.conf dest=/etc/dovecot/ owner=root mode=655
 
-- name: Copy dovecot config files
+- name: Copy dovecot config files - dovecot-mysql.conf
   template: src=dovecot-mysql.conf dest=/etc/dovecot/ owner=root mode=655
 
-- name: Copy postfixadmin config files
-  template: src=config.inc.php dest=/etc/postfixadmin/ owner=root mode=655
-
-- name: Copy postfixadmin config files
+- name: Copy postfixadmin config files - dbconfig.inc.php pfxadmin
   template: src=dbconfig.inc.php dest=/etc/postfixadmin/ owner=root mode=655
 
-- name: Copy postfix config files
+- name: Copy postfix config files - dynmaps
   template: src=dynamicmaps.cf dest=/etc/postfix/ owner=root mode=655
 
-- name: Copy postfix config files
+- name: Copy postfix config files - main.cf
   template: src=main.cf dest=/etc/postfix/ owner=root mode=655
 
-- name: Copy postfix config files
+- name: Copy postfix config files - master.cf 
   template: src=master.cf dest=/etc/postfix/ owner=root mode=655
 
-- name: Copy postfix config files
+- name: Copy postfix config files - relay_domains.cf
   template: src=mysql_relay_domains.cf dest=/etc/postfix/ owner=root mode=655
 
-- name: Copy postfix config files
+- name: Copy postfix config files - valias_maps.cf
   template: src=mysql_virtual_alias_maps.cf dest=/etc/postfix/ owner=root mode=655
 
-- name: Copy postfix config files
+- name: Copy postfix config files - vbox_domains.cf
   template: src=mysql_virtual_mailbox_domains.cf dest=/etc/postfix/ owner=root mode=655
 
-- name: Copy postfix config files
+- name: Copy postfix config files vbox_maps.cf
   template: src=mysql_virtual_mailbox_maps.cf dest=/etc/postfix/ owner=root mode=655
 
-- name: Copy postfix config files
+- name: Copy postfix config files - postfix-files
   template: src=postfix-files dest=/etc/postfix/ owner=root mode=655
 
-- name: Copy postfix config files
+- name: Copy postfix config files - postfix-scripts 
   template: src=postfix-script dest=/etc/postfix/ owner=root mode=655
 
-- name: Copy postfix config files
+- name: Copy postfix config files - post-install
   template: src=post-install dest=/etc/postfix/ owner=root mode=655
 
-- name: Copy postfix config files
+- name: Copy postfix config files - database script
   template: src=root-postfix.sql dest=/etc/postfix/ owner=root mode=655
+
+- name: Copy postfix config files - smtpd.conf
+  template: src=smtpd.conf dest=/etc/postfix/sasl/smtpd.conf  owner=root mode=655 
+  notify: restart postfix
+
+- name: Autosigned cert - openssl query
+  command: openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=FR/ST=RA/L=Somewhere/O=Overtherainbow/CN={{ domain }}" -keyout /etc/ssl/mail.key -out /etc/ssl/mail.crt
+
+- name: ca_bundle - gettint it from startssl
+  get_url: url=http://www.startssl.com/certs/ca-bundle.crt dest=/etc/ssl/ca-bundle.crt mode=0644
 
 - name: Create database for postfix
   shell: mysql < /etc/postfix/root-postfix.sql
 
-- name: Config amavis
+- name: Config amavis - content_filter_mode
   copy: src=etc-amavis-conf.d-15-content_filter_mode  dest=/etc/amavis/conf.d/15-content_filter_mode
 
-- name: Config amavis
+- name: Config amavis - userfile
   copy: src=etc-amavis-conf.d-50-user  dest=/etc/amavis/conf.d/50-user
 
+- name: adding amavis to clamav group
+  shell: usermod amavis -a -G clamav
+- name: Vice versa
+  shell: usermod clamav -a -G amavis
+
+- name: setting right perms to amavis homedir
+  shell: chmod g+rx /var/lib/amavis
+
 - name: Virus repository
-  shell:  mkdir /var/spool/virusmails 
-
-- name: chown
-  shell: chown amavis:amavis /var/spool/virusmails
-
-- name: update SA
+  file: path=/var/spool/virusmails state=directory owner=amavis group=amavis
+     
+- name: update Spam-Assassin - will fail if playbook is played twice
   shell: sa-update -D
+  notify: restart amavis
+  ignore_errors: yes
 
-- name: Config SA
+- name: Config Spam-Assassin
   copy: src=etc-default-spamassassin  dest=/etc/default/spamassassin
   notify: restart spamassassin
 
@@ -121,5 +135,24 @@
   template: src=etc-default-postgrey dest=/etc/default/postgrey
   notify: restart postgrey
 
+- name: Install postfixadmin from debian repos
+  apt: pkg={{item}} state=installed update_cache=no install_recommends=yes
+  with_items: "{{ postfixadmin }}"
+  ignore_errors: no
 
+- name: Update old postfixadmin with new one
+  shell: rsync -aP /etc/postfixadmin/postfixadmin-2.91/* /usr/share/postfixadmin/
+
+- name: Chowning to the rightful user
+  shell: chown -R www-data. /usr/share/postfixadmin/
+  notify: restart apache 
+
+- name: Copy postfixadmin config files
+  template: src=config.inc.php dest=/etc/postfixadmin/ owner=root mode=655
+
+- name: Also to usr share 
+  template: src=config.inc.php dest=/usr/share/postfixadmin/ owner=www-data mode=655
+
+- name: TODO
+  debug: msg="Now go to http://{{ domain }}/postfixadmin and follow the instructions documentation is here http://sourceforge.net/p/postfixadmin/wiki/Home/"
 # vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:

@@ -28,9 +28,9 @@ Après la description suivent des exemples de ces variables.
  - default_packages_debian : la liste des packages debian a installer par defaut
  - ansible_fqdn : le nom a donner au serveur
  - description : La description du serveur (s'affichera a la connexion)
- - ntp_server1 : le premier serveur NTP a utiliser
- - ntp_server2 : le deuxième serveur ntp a installer
+ - ntp_servers : liste de serveurs NTP à utiliser
  - disable_ipv6 : IPv6 doit il etre desactive ou non
+ - tzdata_timezone: Permet de définir une timezone personnalisée (Europe/Paris est définie par défaut)
 
 ### Exemples de variables ###
 fichier : /etc/ansible/group_vars/all :
@@ -48,9 +48,8 @@ ansible_fqdn: serveur-debian.exemple.com
 
 description: Bienvenue sur ce serveur debian
 
-ntp_server1: 0.fr.pool.ntp.org
-ntp_server2: 1.fr.pool.ntp.org
+ntp_servers:
+  - 0.fr.pool.ntp.org
+  - 1.fr.pool.ntp.org
 
 disable_ipv6: yes
-
-
