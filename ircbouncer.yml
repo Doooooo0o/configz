@@ -1,0 +1,11 @@
+---
+
+- name: Deployer et configurer ZNC
+  hosts: all
+  user: root
+  gather_facts: yes
+
+  roles:
+    - ircbouncer
+
+# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:

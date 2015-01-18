@@ -24,7 +24,6 @@ roles
 * IRCBouncer
  * Provides a ZNC Config
  * Imported with <3 from https://github.com/al3x/sovereign/
- * **Not yet READY**
 * Mail
  * provides a complete **mail** server for a given domain name and the vdomain capability for other domains.
  * **Note** : This role starts in order : common, mariadb, and mail. If you don't want one of them, please comment out.
@@ -75,12 +74,13 @@ mysql_host: localhost
 
 # ircbouncer
 znc_version: 1.4
- irc_nick: (required)
- irc_ident: (required)
- irc_realname: (required)
- irc_quitmsg: (required)
- irc_password_hash: (required)
- irc_password_salt: (required)
+irc_nick: (required)
+irc_ident: (required)
+irc_realname: (required)
+irc_quitmsg: (required)
+irc_password_hash: (required) # http://wiki.znc.in/Configuration#Pass
+irc_password_salt: (required) # http://wiki.znc.in/Configuration#Pass
+irc_timezone: "Europe/Paris" #Example: "Europe/Paris"
 
 # xmpp
 prosody_admin: "admin@test.net"

@@ -35,10 +35,12 @@
 - name: Copy znc init file into place
   copy: src=etc_init.d_znc dest=/etc/init.d/znc mode=0755
 
-- name: Create a combined version of the private key with public cert and intermediate + root CAs
-  shell: cat /etc/ssl/private/wildcard_private.key /etc/ssl/certs/wildcard_combined.pem >
-    /var/lib/znc/znc.pem creates=/var/lib/znc/znc.pem
+- name: create self-signed SSL cert
+  command: openssl req -new -nodes -x509 -subj "/C=FR/ST=SomeWhere/L=OverTheRainBow/O=znc/CN=znc.{{ domain }}" -days 3650 -keyout /root/znc.key -out /root/znc.crt -extensions v3_ca creates=/root/znc.crt
   notify: restart znc
+
+- name: create self-signed SSL cert-2
+  shell: cat /root/znc.crt > /var/lib/znc/znc.pem && cat /root/znc.crt >> /root/znc.key
 
 - name: Ensure znc user and group can read cert
   file: path=/var/lib/znc/znc.pem group=znc owner=znc mode=640
@@ -57,9 +59,6 @@
   template: src=var_lib_znc_configs_znc.conf.j2 dest=/var/lib/znc/configs/znc.conf owner=znc group=znc
   when: znc_config.rc != 0
   notify: restart znc
-
-- name: Set firewall rule for znc
-  ufw: rule=allow port=6697 proto=tcp
 
 - name: Ensure znc is a system service
   service: name=znc state=started enabled=true
