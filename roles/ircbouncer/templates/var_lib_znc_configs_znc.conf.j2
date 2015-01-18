@@ -40,6 +40,15 @@ Version = 1.0
 	SSL = false
 </Listener>
 
+<Listener listener3>
+	AllowIRC = true
+	AllowWeb = true
+	IPv4 = true
+	IPv6 = true
+	Port = 1338
+	SSL = true
+</Listener>
+
 <User {{ irc_nick }}>
 	Admin = true
 	Allow = *
@@ -71,6 +80,21 @@ Version = 1.0
 	        Salt = {{ irc_password_salt }}
 	</Pass>
 
+	<Network {{ network }}>
+		FloodBurst = 4
+		FloodRate = 1.00
+		IRCConnectEnabled = true
+		LoadModule = chansaver
+		LoadModule = keepnick
+		LoadModule = kickrejoin
+		LoadModule = nickserv
+		LoadModule = perform
+		LoadModule = simple_away
+		Server = {{ network_address }} {{ network_port }}
+
+		<Chan #{{ network_channel}}>
+		</Chan>
+	</Network>
 	<Network freenode>
 		BindHost = 0.0.0.0
 		FloodBurst = 4

@@ -81,6 +81,9 @@ irc_quitmsg: (required)
 irc_password_hash: (required) # http://wiki.znc.in/Configuration#Pass
 irc_password_salt: (required) # http://wiki.znc.in/Configuration#Pass
 irc_timezone: "Europe/Paris" #Example: "Europe/Paris"
+network_address: irc.my.network.net
+network_port: 6697
+network_channel: 1337Chan
 
 # xmpp
 prosody_admin: "admin@test.net"
