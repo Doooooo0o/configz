@@ -87,7 +87,7 @@ broken_sasl_auth_clients = yes
 
 # Indiquer à Postfix de livrer à un destinataire à la fois
 ## la réception d'un mail en provenance d'un expéditeur unique avec plusieurs destinataire ne fonctionnerais pas sans cette option
-#dovecot_destination_recipient_limit = 1
+dovecot_destination_recipient_limit = 1
 content_filter = amavis:[127.0.0.1]:10024
 receive_override_options = no_address_mappings
 
