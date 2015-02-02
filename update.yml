@@ -1,6 +1,6 @@
 ---
 
-- name: Update host --- tags - grsec, init, normal
+- name: Update host --- tags - normal, packages, ldconfig
   hosts: all
   user: root
   gather_facts: yes
