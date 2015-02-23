@@ -1,7 +1,7 @@
 ---
 
 - include: normal.yml
-- include: by_packages.yml
+#- include: by_packages.yml
 
 - name: ldconfig
   tags:
