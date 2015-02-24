@@ -1,0 +1,19 @@
+---
+- name: Install debian-goodies
+  apt: pkg=debian-goodies state=installed update_cache=no
+  tags: test
+  when: ansible_distribution == 'Debian'
+  ignore_errors: yes
+
+- name: Copy checkrestart wrapper and config
+  tags: test
+  copy: src={{ item }} dest=/tmp/{{ item }}
+  with_items:
+      - wrapper.sh
+      - ignore
+
+- name: Execute Wrapper
+  tags: test
+  shell: /bin/bash -x /tmp/wrapper.sh
+
+#vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
