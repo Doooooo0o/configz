@@ -2,7 +2,7 @@
 
 - include: normal.yml
 #- include: by_packages.yml
-
+- include: restart.yml
 - name: ldconfig
   tags:
     - normal

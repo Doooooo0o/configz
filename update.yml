@@ -1,6 +1,6 @@
 ---
 
-- name: Update host --- tags - normal, packages, ldconfig
+- name: Update host --- tags - normal, packages, ldconfig, restart
   hosts: all
   user: root
   gather_facts: yes
