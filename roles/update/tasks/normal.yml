@@ -1,4 +1,12 @@
 ---
+- name: check LTS repo for squeeze
+  tags: 
+    - update
+    - normal
+  apt_repository: repo='deb http://http.debian.net/debian/ squeeze-lts main' state=present
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '6' 
+
+
 - name: apt-get update for my Monitoring
   shell: apt-get update -qq > /var/lib/apt/update_output 2>&1 && [ ! -s /var/lib/apt/update_output ] && date -u > /var/lib/apt/update_success
   tags: update
