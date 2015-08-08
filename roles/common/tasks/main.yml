@@ -1,6 +1,6 @@
 ---
 # Role commun a toutes les machines
-# vars: admin_ssh_keys, repositories, default_packages, ntp_server1, ntp_server2, description
+# vars: admin_ssh_keys, repositories, default_packages, ntp_servers, description
 
 # Bootstrap if necessary (install python-apt)
 
