@@ -1,0 +1,189 @@
+---
+
+
+## Installation and configuration for Xymon server ##
+
+# Binaries
+
+- name: install xymon server binaries - download
+  get_url: url=http://sourceforge.net/projects/xymon/files/latest/download?source=directory dest=/tmp/xymon_server.tar.gz
+  tags:
+    - xymon-server
+    - server-packages
+
+- name: install xymon server binaries - untar
+  unarchive: src=/tmp/xymon_server.tar.gz dest=/tmp/ copy=no
+  tags: 
+    - xymon-server
+    - server-packages
+
+- name: install xymon server binaries - register release
+  shell: ls -d /tmp/xymon-* | awk -F'-' '{print $2}'
+  register: xymon_release
+  tags:
+    - xymon-server
+    - server-packages
+
+- name: install xymon server binaries - display release
+  fail: msg="Using xymon server version {{ xymon_release.stdout }}."
+  ignore_errors: yes
+  tags:
+    - xymon-server
+    - server-packages
+
+- name: install xymon server binaries - display warning
+  fail: msg="Now building packages. WARN! It may take some time."
+  ignore_errors: yes
+  tags:
+    - xymon-server
+    - server-packages
+
+## Debian
+- name: Debian, install xymon server dependencies
+  apt: pkg={{item}} state=present update_cache=yes
+  tags:
+    - server-packages
+    - server-configuration
+    - xymon-server
+  with_items:
+    - apache2
+    - rrdtool
+    - librrd-dev
+    - libpcre3-dev
+    - libssl-dev
+    - ldap-utils
+    - libldap2-dev
+    - fping
+    - libc-ares-dev
+    - python-passlib
+  when: ansible_distribution == 'Debian'
+
+- name: Debian, install xymon server binaries - make deb
+  shell: ./build/makedeb.sh {{ xymon_release.stdout }}
+  args:
+     executable: /bin/bash
+     chdir: /tmp/xymon-{{ xymon_release.stdout }}/
+  tags:
+    - xymon-server
+    - server-packages
+  when: ansible_distribution == 'Debian'
+
+- name: Debian, install xymon server binaries - create pid directory
+  file: 
+    path=/var/run/xymon
+    state=directory mode=0755
+    owner=xymon
+    group=xymon
+  tags: 
+    - xymon-server
+    - server-packages
+
+- name: Debian, install xymon server binaries - install deb server
+  apt: deb=/tmp/xymon-{{ xymon_release.stdout }}/debbuild/xymon_{{ xymon_release.stdout }}_amd64.deb
+  tags:
+    - xymon-server
+    - server-packages
+  when: ansible_distribution == 'Debian'
+  notify: restart apache
+
+- name: Debian, install xymon server binaries - install deb client
+  apt: deb=/tmp/xymon-{{ xymon_release.stdout }}/debbuild/xymon-client_{{ xymon_release.stdout }}_amd64.deb
+  tags:
+    - xymon-server
+    - server-packages
+  when: ansible_distribution == 'Debian'
+
+## Centos NOT READY YET
+#- name: Centos, add xymon group
+  #group: 
+    #name=xymon
+    #state=present
+  #tags: 
+    #- xymon-server
+    #- server-packages
+  #when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
+
+#- name: Centos, add xymon user
+  #user:
+    #name=xymon
+    #group=xymon
+    #createhome=yes
+  #tags: 
+    #- xymon-server
+    #- server-packages
+  #when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
+
+#- name: Centos, install xymon server dependencies
+  #yum: pkg={{item}} state=installed
+  #with_items: 
+    #- gcc
+    #- make
+    #- fping
+    #- pcre-devel
+    #- openssl-devel
+    #- openldap-devel
+    #- rrdtool-devel
+  #tags: 
+    #- xymon-server
+    #- server-packages
+  #when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
+
+#- name: Centos, install xymon server binaries - configure
+  #shell: ./configure --server
+  #args:
+     #executable: /bin/bash
+     #chdir: /tmp/xymon-{{ xymon_release.stdout }}/
+  #tags:
+    #- xymon-server
+    #- server-packages
+  #when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
+
+#- name: Centos, install xymon server binaries - make & make install
+  #shell: make && make install
+  #args:
+     #executable: /bin/bash
+     #chdir: /tmp/xymon-{{ xymon_release.stdout }}/
+  #tags:
+    #- xymon-server
+    #- server-packages
+  #when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
+
+#- name: Centos, install xymon server binaries - init file
+  #shell: mv /tmp/xymon-{{ xymon_release.stdout }}/rpm/xymon-init.d /etc/init.d/xymon
+  #args:
+     #executable: /bin/bash
+  #tags:
+    #- xymon-server
+    #- server-packages
+  #when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
+
+
+## Xymon server configuration
+- name: enable global group Server in conf
+  lineinfile: dest=/etc/xymon/hosts.cfg
+              regexp="^#group Servers$"
+              line="group Servers"
+              backrefs=yes
+  tags:
+    - xymon-server
+    - server-configuration
+
+## Apache for xymon server
+- name: generate htpasswd file for xymon-server
+  htpasswd: 
+    path="/usr/local/xymon/server/etc/xymonpasswd"
+    name={{xymon_htname}}
+    password={{xymon_htpasswd}}
+    create=yes
+    state=present 
+  tags:
+    - xymon-server
+    - server-configuration
+  when: ansible_distribution == 'Debian'
+
+- name: Apache configuration done
+  fail: msg="You can now connect to http://yourserver/xymon/"
+  ignore_errors: yes
+  tags:
+    - xymon-server
+    - server-configuration

@@ -1,0 +1,16 @@
+---
+
+- name: restart xymon-hobbit-service
+  service: name={{ client_name }}-client state=restarted
+
+- name: reload xymon-hobbit-service
+  service: name={{ client_name }}-client state=reloaded
+
+- name: restart hobbit-client
+  service: name=hobbit-client state=restarted
+
+- name: restart xymon-client
+  service: name=xymon-client state=restarted
+
+- name: restart apache
+  service: name=apache2 state=restarted
