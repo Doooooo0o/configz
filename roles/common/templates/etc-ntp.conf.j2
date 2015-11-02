@@ -7,10 +7,9 @@ filegen loopstats file loopstats type day enable
 filegen peerstats file peerstats type day enable
 filegen clockstats file clockstats type day enable
 {% for server in ntp_servers %}
-server {{ server }}
-restrict {{ server }} nomodify nopeer
+server {{ server }} iburst
 {% endfor %}
-restrict default ignore
+restrict -4 default ignore
 restrict -6 default ignore
 restrict 127.0.0.1
 restrict ::1
