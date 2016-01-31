@@ -23,7 +23,7 @@
     - pbzip2
 
 ## TODO : possibility to reduce to one task with ansible 2.0
-## Ref : option src de http://docs.ansible.com/ansible/unarchive_module.html
+## Ref : src option from http://docs.ansible.com/ansible/unarchive_module.html
 - name: install openvz-diff-backups - download
   get_url: 
      url=http://download.openvz-diff-backups.fr/releases/openvz-diff-backups_v0.9.4-beta.tar.gz
