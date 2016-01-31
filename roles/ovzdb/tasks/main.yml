@@ -1,0 +1,122 @@
+---
+### Task dedicated to install ovzdb ###
+### ref http://projets.developpeur-neurasthenique.fr/projects/openvz-diff-backups ###
+
+## Check openvz hypervisor
+- name: check server is openvz hypervisor
+  fail: msg="You are trying to install on a non-openvz hypervisor, exiting..."
+  tags: 
+     - backup
+  when: ansible_virtualization_type != 'openvz' and ansible_virtualization_role !='host'
+
+#### Download and extract openvz-diff-backup ####
+- name: install openvz-diff-backups - prerequisite
+  apt: pkg={{item}} state=present update_cache=yes
+  tags:
+    - backup
+  with_items:
+    - dnsutils
+    - libpcre3
+    - rsync
+    - bc
+    - uuid-runtime
+    - pbzip2
+
+## TODO : possibility to reduce to one task with ansible 2.0
+## Ref : option src de http://docs.ansible.com/ansible/unarchive_module.html
+- name: install openvz-diff-backups - download
+  get_url: 
+     url=http://download.openvz-diff-backups.fr/releases/openvz-diff-backups_v0.9.4-beta.tar.gz
+     dest=/tmp/openvz-diff-backup.tar.gz
+     force=yes
+  tags:
+    - backup
+
+- name: install openvz-diff-backups - untar
+  unarchive: src=/tmp/openvz-diff-backup.tar.gz dest=/root/ copy=no
+  tags: 
+    - backup
+
+#### Configure openvz-diff-backups ####
+- name: install openvz-diff-backups - link to simple directory
+  file:
+     src=/root/openvz-diff-backups_v0.9.4-beta
+     path=/root/openvz-diff-backups
+     state=link
+  tags: 
+    - backup
+
+- name: install openvz-diff-backups - upload conf file
+  template: src=openvz-diff-backups.conf.j2 dest=/etc/openvz-diff-backups.conf
+  tags: 
+    - backup
+
+- name: install openvz-diff-backups - create symlink to usr/local/bin
+  file:
+     src=/root/openvz-diff-backups/openvz-diff-backups
+     path=/usr/local/bin/openvz-diff-backups
+     state=link
+  tags: 
+    - backup
+
+- name: install openvz-diff-backups - update to latest release - CAN TAKE A WHILE
+  shell: /usr/local/bin/openvz-diff-backups update all install -c /etc/openvz-diff-backups.conf;/usr/local/bin/openvz-diff-backups update all check -c /etc/openvz-diff-backups.conf
+  register: result
+  until: result.stdout.find("your release is up to date") != -1
+  retries: 10
+  tags: 
+    - backup
+
+- name: install openvz-diff-backups - cron for dump
+  cron: name="backup container with openvz-diff-backups" minute="{{ backup_minute }}" hour="{{ backup_hour }}" job='/usr/local/bin/openvz-diff-backups backup all auto -q  -c /etc/openvz-diff-backups.conf> /dev/null'
+  tags: 
+    - backup
+
+- name: install openvz-diff-backups - cron for purge
+  cron: name="purge ct backups with openvz-diff-backups" minute="{{ purge_minute }}" hour="{{ purge_hour }}" job='/usr/local/bin/openvz-diff-backups delete all 7- -q -c /etc/openvz-diff-backups.conf > /dev/null'
+  tags: 
+    - backup
+
+- name: install openvz-diff-backups - cron for replicate
+  cron: name="upload ct backups with openvz-diff-backups" minute="{{ upload_minute }}" hour="{{ upload_hour }}" job='/usr/local/bin/openvz-diff-backups replicate all 0- -q -c /etc/openvz-diff-backups.conf > /dev/null'
+  tags: 
+    - backup
+
+- name: install openvz-diff-backups - check and generate rsa key on server
+  user: name=root generate_ssh_key=yes ssh_key_bits=4096
+  tags: 
+    - backup
+
+- name: install openvz-diff-backups - get rsa key on the server
+  shell: /bin/cat /root/.ssh/id_rsa.pub
+  register: server_key
+  ignore_errors: false
+  tags: 
+    - backup
+
+- name: install openvz-diff-backups - install ssh key to backup server
+  authorized_key: user=root key='{{ server_key.stdout }}'
+  tags: 
+    - backup
+  delegate_to: "{{ backup_server }}"
+
+- name: install openvz-diff-backups - install ssh key to upload server
+  authorized_key: user=root key='{{ server_key.stdout }}'
+  tags: 
+    - backup
+  delegate_to: "{{ upload_server }}"
+
+## Hook to create files to monitoring for openvz-diff-backups
+- name: monitoring for openvz-diff-backups - upload hook script
+  copy: src=openvz-diff-backups-hook-OVZDB_WRITE_ERROR_REPORT dest=/root/openvz-diff-backups/etc/hooks/OVZDB_WRITE_ERROR_REPORT mode=0755
+  tags: 
+    - backup
+
+- name: monitoring for openvz-diff-backups - activate hook
+  file:
+     src=/root/openvz-diff-backups/etc/hooks/OVZDB_WRITE_ERROR_REPORT
+     path=/root/openvz-diff-backups/etc/hooks/hook-failure
+     state=link
+  tags: 
+    - backup
+

@@ -45,5 +45,17 @@ wallabag_db_username: wallabag
 wallabag_db_password: (required)
 wallabag_db_database: wallabag
 
+#ovzdb
+backup_server: 192.168.1.2
+backup_dir: "/var/lib/vz/backups/OpenVZ/"
+backup_minute: 10
+backup_hour: 02
+purge_minute: 10
+purge_hour: 03
+upload_server: 192.168.1.1
+upload_dir: "/var/lib/vz/backups/OpenVZ/"
+upload_minute: 10
+upload_hour: 05
+admin_email: "configz@github.com"
 
 # vim: set textwidth=0 ft=yaml:

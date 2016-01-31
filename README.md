@@ -45,6 +45,16 @@ roles
  * Configure xymon client and add the client in xymon server configuration to allow fetch data
  * **Note** : Using xymon-client tag needs a working xymon-server (whenever the server was installed with the playbook or not)
  * Cloud be (theoretically, to be tested) used to update xymon server binaries to last stable release
+* ovzdb
+ * http://projets.developpeur-neurasthenique.fr/projects/openvz-diff-backups
+ * Install openvz-diff-backup to an openvz host to backup container
+ * enable update of openvz-diff-backup thanks to 0.9.4 version
+ * enable backup AND upload feature via cron
+ * enable purge feature via cron
+ * enable customization of configuration file
+ * use standard installation method (conf in /etc, link binary to /usr/local/bin)
+ * provide bonus hook to create files when problems occurs (additionnally to send emails), allowing monitoring with standard tool (ie xymon and else)
+
 
 example host file
 ===== 
@@ -117,6 +127,23 @@ monitoring_section: dns ## Name of the page to use in xymon server webpage tree 
 monitoring_ip: xxx.xxx.xxx.xxx ## IP address of the client to add in server (mandatory)
 xymon_checks: "#" ## Checks to use for this client. Default '#' do a simple ping check
 
+#ovzdb
+## You can duplicate backup locally and remotely
+## by using openvz host as backup_server and 
+## remote server as upload_server
+## I advice to customize cron hour to have
+## backup, then purge, then upload
+backup_server: xxx.xxx.xxx.xxx
+backup_dir: "/var/lib/vz/backups/OpenVZ/"
+backup_minute: 10
+backup_hour: 02
+purge_minute: 10
+purge_hour: 03
+upload_server: yyy.yyy.yyy.yyy
+upload_dir: "/var/lib/vz/backups/OpenVZ/"
+upload_minute: 10
+upload_hour: 05
+admin_email: "your_email@example.com"
 
 # vim: set textwidth=0 ft=yaml:
 

@@ -1,0 +1,8 @@
+---
+
+- name: Install and configure open-vz-diff-backup
+  hosts: all
+  user: root
+  gather_facts: yes
+  roles:
+    - ovzdb

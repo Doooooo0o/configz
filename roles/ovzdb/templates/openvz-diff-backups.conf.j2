@@ -1,0 +1,13 @@
+EMAIL_ADDRESS="{{ admin_email }}"
+MD5_SOURCE_HASH="snapshot"
+MD5_BACKUP_HASH="yes"
+MD5_UPLOAD_HASH="yes"
+MD5_TARGET_HASH="yes"
+KICK_VZCTL_PROCESS="yes"
+SERVER_VZCONF_DIR="/etc/vz/conf"
+SERVER_TMP_DIR="/tmp"
+SERVER_TMPFS_SIZE="auto"
+BACKUP_SSH_PATH="root@{{ backup_server }}:{{ backup_dir }}"
+BACKUP_SKIP_STOPPED_CONTAINERS="all"
+UPLOAD_SKIP_HOSTS=other
+UPLOAD_SSH_PATH="root@{{ upload_server }}:{{ upload_dir }}"

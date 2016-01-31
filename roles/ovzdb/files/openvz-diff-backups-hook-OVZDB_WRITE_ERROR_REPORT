@@ -1,0 +1,70 @@
+#!/bin/bash -fu
+
+#
+# Hook to write file report instead of sending email
+#
+
+CONFIG_HOST="$1"
+CONFIG_PATH="$2"
+CONFIG_TASK="$3"
+CONFIG_DATE="$4"
+CONFIG_FILE="$5"
+
+HOOK_NAME="$6"
+HOOK_TYPE="$7"
+HOOK_TASK="$8"
+HOOK_CTID="$9"
+
+# ---
+
+source "$CONFIG_FILE"
+
+if [[ "$CONFIG_TASK" == "openvz-diff-backup" ]]; then
+  LOG_FILE="$CONFIG_PATH/var/log/ovzdb.log"
+else
+  LOG_FILE="$CONFIG_PATH/var/log/ovzdb_${CONFIG_TASK}.log"
+fi
+
+# ---
+
+if [[ -n "${!LOG_FILE[@]}" ]] && [[ -f "$LOG_FILE" ]]; then
+  # --- Set report file
+
+  REPORT_FILE="$SERVER_TMP_DIR/${CALLER_TASK}_${HOOK_TASK}_${HOOK_CTID}_error-report.flag"
+
+  # --- Splash
+
+  echo "
+######################################
+# Error report - openvz-diff-backups #
+######################################
+
+Oops, something went wrong. *Read this report or a kitten will die*.
+
+(please, do not panic and fill a bug report if necessary)" >> "$REPORT_FILE"
+
+  # --- Create report
+
+  echo -e "\n# --- $LOG_FILE\n" >> "$REPORT_FILE"
+
+  if [[ -s "$LOG_FILE" ]]; then
+    tac "$LOG_FILE" | grep -B 8192 -P -m 1 "\s*Info\s*\-\s*openvz\-diff\-backups\s*\d\.\d\.\d" | tac >> "$REPORT_FILE"
+  fi
+
+  echo -e "\n# --- /var/log/vzctl.log\n" >> "$REPORT_FILE"
+
+  if [[ -s "/var/log/vzctl.log" ]]; then
+    tail -n 50 "/var/log/vzctl.log" >> "$REPORT_FILE"
+  fi
+
+  echo -e "\n# --- /var/log/kern.log\n" >> "$REPORT_FILE"
+
+  if [[ -s "/var/log/kern.log" ]]; then
+    tail -n 50 "/var/log/kern.log" >> "$REPORT_FILE"
+  fi
+
+
+  # --- Exit
+
+  exit 0
+fi
