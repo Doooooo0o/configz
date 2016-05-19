@@ -31,11 +31,29 @@
      force=yes
   tags:
     - backup
+  when: not beta | bool
 
 - name: install openvz-diff-backups - untar
   unarchive: src=/tmp/openvz-diff-backup.tar.gz dest=/root/ copy=no
   tags: 
     - backup
+  when: not beta | bool
+
+### Possibility to use beta version ###
+- name: install openvz-diff-backup - beta file
+  copy: 
+     src=openvz-diff-backups_v0.9.8-beta.tar.gz
+     dest=/tmp/openvz-diff-backup.tar.gz
+     force=yes
+  tags:
+    - backup
+  when: beta | bool
+
+- name: install openvz-diff-backups - untar beta
+  unarchive: src=/tmp/openvz-diff-backup.tar.gz dest=/root/ copy=no
+  tags: 
+    - backup
+  when: beta | bool
 
 #### Configure openvz-diff-backups ####
 - name: install openvz-diff-backups - link to simple directory
@@ -45,6 +63,16 @@
      state=link
   tags: 
     - backup
+  when: not beta | bool
+
+- name: install openvz-diff-backups - link to simple directory - beta
+  file:
+     src=/root/openvz-diff-backups_v0.9.8-beta
+     path=/root/openvz-diff-backups
+     state=link
+  tags: 
+    - backup
+  when: beta | bool
 
 - name: install openvz-diff-backups - upload conf file
   template: src=openvz-diff-backups.conf.j2 dest=/etc/openvz-diff-backups.conf
@@ -66,6 +94,7 @@
   retries: 10
   tags: 
     - backup
+  when: not beta | bool
 
 - name: install openvz-diff-backups - cron for dump
   cron: name="backup container with openvz-diff-backups" minute="{{ backup_minute }}" hour="{{ backup_hour }}" job='/usr/local/bin/openvz-diff-backups backup all auto -q  -c /etc/openvz-diff-backups.conf> /dev/null'

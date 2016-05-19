@@ -4,5 +4,7 @@
   hosts: all
   user: root
   gather_facts: yes
+  vars: 
+     beta: false
   roles:
     - ovzdb

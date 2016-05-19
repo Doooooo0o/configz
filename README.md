@@ -54,6 +54,7 @@ roles
  * enable customization of configuration file
  * use standard installation method (conf in /etc, link binary to /usr/local/bin)
  * provide bonus hook to create files when problems occurs (additionnally to send emails), allowing monitoring with standard tool (ie xymon and else)
+ * Possibility to use beta version in file directory: hard coded for the moment, name the file openvz-diff-backups_v0.9.8-beta.tar.gz and use -e beta=true on command line
 
 
 example host file
