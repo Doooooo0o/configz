@@ -51,37 +51,37 @@
   notify: restart dovecot
 
 - name: Copy dovecot config files - dovecot.conf
-  template: src=dovecot.conf dest=/etc/dovecot/ owner=root mode=655
+  template: src=dovecot.conf dest=/etc/dovecot/ owner=root mode=644
 
 - name: Copy dovecot config files - dovecot-mysql.conf
-  template: src=dovecot-mysql.conf dest=/etc/dovecot/ owner=root mode=655
+  template: src=dovecot-mysql.conf dest=/etc/dovecot/ owner=root mode=644
 
 - name: Copy dovecot config file - 10-ssl.conf
   copy: src=etc-dovecot-conf.d-10-ssl.conf dest=/etc/dovecot/conf.d/10-ssl.conf owner=root mode=644
 
 - name: Copy postfixadmin config files - dbconfig.inc.php pfxadmin
-  template: src=dbconfig.inc.php dest=/etc/postfixadmin/ owner=root mode=655
+  template: src=dbconfig.inc.php dest=/etc/postfixadmin/ owner=root mode=644
 
 - name: Copy postfix config files - dynmaps
-  template: src=dynamicmaps.cf dest=/etc/postfix/ owner=root mode=655
+  template: src=dynamicmaps.cf dest=/etc/postfix/ owner=root mode=644
 
 - name: Copy postfix config files - main.cf
-  template: src=main.cf dest=/etc/postfix/ owner=root mode=655
+  template: src=main.cf dest=/etc/postfix/ owner=root mode=644
 
 - name: Copy postfix config files - master.cf
-  template: src=master.cf dest=/etc/postfix/ owner=root mode=655
+  template: src=master.cf dest=/etc/postfix/ owner=root mode=644
 
 - name: Copy postfix config files - relay_domains.cf
-  template: src=mysql_relay_domains.cf dest=/etc/postfix/ owner=root mode=655
+  template: src=mysql_relay_domains.cf dest=/etc/postfix/ owner=root mode=644
 
 - name: Copy postfix config files - valias_maps.cf
-  template: src=mysql_virtual_alias_maps.cf dest=/etc/postfix/ owner=root mode=655
+  template: src=mysql_virtual_alias_maps.cf dest=/etc/postfix/ owner=root mode=644
 
 - name: Copy postfix config files - vbox_domains.cf
-  template: src=mysql_virtual_mailbox_domains.cf dest=/etc/postfix/ owner=root mode=655
+  template: src=mysql_virtual_mailbox_domains.cf dest=/etc/postfix/ owner=root mode=644
 
 - name: Copy postfix config files vbox_maps.cf
-  template: src=mysql_virtual_mailbox_maps.cf dest=/etc/postfix/ owner=root mode=655
+  template: src=mysql_virtual_mailbox_maps.cf dest=/etc/postfix/ owner=root mode=644
 
 - name: Copy postfix config files - postfix-files
   template: src=postfix-files dest=/etc/postfix/ owner=root mode=655
@@ -96,7 +96,7 @@
   template: src=root-postfix.sql dest=/etc/postfix/ owner=root mode=655
 
 - name: Copy postfix config files - smtpd.conf
-  template: src=smtpd.conf dest=/etc/postfix/sasl/smtpd.conf  owner=root mode=655
+  template: src=smtpd.conf dest=/etc/postfix/sasl/smtpd.conf  owner=root mode=644
   notify: restart postfix
 
 - name: Autosigned cert - openssl query
@@ -148,10 +148,10 @@
   notify: restart apache
 
 - name: Copy postfixadmin config files
-  template: src=config.inc.php dest=/etc/postfixadmin/ owner=root mode=655
+  template: src=config.inc.php dest=/etc/postfixadmin/ owner=root mode=644
 
 - name: Also to usr share
-  template: src=config.inc.php dest=/usr/share/postfixadmin/ owner=www-data mode=655
+  template: src=config.inc.php dest=/usr/share/postfixadmin/ owner=www-data mode=644
 
 - name: TODO
   debug: msg="Now go to http://{{ domain }}/postfixadmin and follow the instructions documentation is here http://sourceforge.net/p/postfixadmin/wiki/Home/"
