@@ -4,7 +4,7 @@
 
 - name: Install pwgen
   apt: pkg={{item}} state=installed update_cache=yes
-  with_items: "{{ firstpkg }}" 
+  with_items: "{{ firstpkg }}"
   ignore_errors: no
 
 - name: Randomly generate a postfix database password
@@ -13,16 +13,16 @@
 
 - name: Install necessary packages for postfix standalone
   apt: pkg={{item}} state=installed update_cache=yes
-  with_items: "{{ packages }}" 
+  with_items: "{{ packages }}"
   ignore_errors: no
 
 - name: Downloading postfixadmin
-  get_url: url=http://downloads.sourceforge.net/project/postfixadmin/postfixadmin/postfixadmin-2.91/postfixadmin-2.91.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fpostfixadmin%2Ffiles%2F&ts=1412684802&use_mirror=softlayer-ams validate_certs=no dest=/tmp/postfixadmin-2.91.tar.gz
+  get_url: url=https://downloads.sourceforge.net/project/postfixadmin/postfixadmin/postfixadmin-3.0.2/postfixadmin-3.0.2.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fpostfixadmin%2Ffiles%2F&ts=1489870165&use_mirror=netcologne validate_certs=no dest=/tmp/postfixadmin.tar.gz
 - name: Creation of the right folder
   file: path=/etc/postfixadmin/ state=directory mode=0755 recurse=yes
 
 - name: Untar the pfxadmin
-  unarchive: src=/tmp/postfixadmin-2.91.tar.gz dest=/etc/postfixadmin/
+  unarchive: src=/tmp/postfixadmin.tar.gz dest=/etc/postfixadmin/ copy=no
 
 - name: enable SASLAuthd on boot
   copy: src=etc-default-saslauthd dest=/etc/default/saslauthd
@@ -65,7 +65,7 @@
 - name: Copy postfix config files - main.cf
   template: src=main.cf dest=/etc/postfix/ owner=root mode=655
 
-- name: Copy postfix config files - master.cf 
+- name: Copy postfix config files - master.cf
   template: src=master.cf dest=/etc/postfix/ owner=root mode=655
 
 - name: Copy postfix config files - relay_domains.cf
@@ -83,7 +83,7 @@
 - name: Copy postfix config files - postfix-files
   template: src=postfix-files dest=/etc/postfix/ owner=root mode=655
 
-- name: Copy postfix config files - postfix-scripts 
+- name: Copy postfix config files - postfix-scripts
   template: src=postfix-script dest=/etc/postfix/ owner=root mode=655
 
 - name: Copy postfix config files - post-install
@@ -93,7 +93,7 @@
   template: src=root-postfix.sql dest=/etc/postfix/ owner=root mode=655
 
 - name: Copy postfix config files - smtpd.conf
-  template: src=smtpd.conf dest=/etc/postfix/sasl/smtpd.conf  owner=root mode=655 
+  template: src=smtpd.conf dest=/etc/postfix/sasl/smtpd.conf  owner=root mode=655
   notify: restart postfix
 
 - name: Autosigned cert - openssl query
@@ -121,7 +121,7 @@
 
 - name: Virus repository
   file: path=/var/spool/virusmails state=directory owner=amavis group=amavis
-     
+
 - name: update Spam-Assassin - will fail if playbook is played twice
   shell: sa-update -D
   notify: restart amavis
@@ -141,16 +141,16 @@
   ignore_errors: no
 
 - name: Update old postfixadmin with new one
-  shell: rsync -aP /etc/postfixadmin/postfixadmin-2.91/* /usr/share/postfixadmin/
+  shell: rsync -aP /etc/postfixadmin/postfixadmin-3.0.2/* /usr/share/postfixadmin/
 
 - name: Chowning to the rightful user
   shell: chown -R www-data. /usr/share/postfixadmin/
-  notify: restart apache 
+  notify: restart apache
 
 - name: Copy postfixadmin config files
   template: src=config.inc.php dest=/etc/postfixadmin/ owner=root mode=655
 
-- name: Also to usr share 
+- name: Also to usr share
   template: src=config.inc.php dest=/usr/share/postfixadmin/ owner=www-data mode=655
 
 - name: TODO
