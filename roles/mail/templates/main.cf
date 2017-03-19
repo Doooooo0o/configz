@@ -33,8 +33,21 @@ readme_directory = no
 # smtpd_tls_cert_file = /etc/ssl/certs/smtpd.crt
 # smtpd_tls_CAfile = /etc/ssl/certs/cacert.pem
 
-smtpd_tls_key_file = /etc/ssl/mail.key
-smtpd_tls_cert_file = /etc/ssl/mail.crt
+smtpd_use_tls=yes
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtpd_tls_auth_only = yes
+smtp_tls_security_level = may
+smtpd_tls_security_level = may
+smtpd_tls_loglevel = 1
+smtpd_tls_received_header = yes
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_security_options = noanonymous
+broken_sasl_auth_clients = yes
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+smtpd_sasl_authenticated_header = yes
+
 
 smtpd_use_tls=yes
 smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
@@ -78,10 +91,6 @@ smtpd_recipient_restrictions =
   reject_rbl_client zen.spamhaus.org,
   reject_rbl_client cbl.abuseat.org,
   reject_invalid_hostname
-
-smtpd_sasl_auth_enable = yes
-smtpd_sasl_security_options = noanonymous
-broken_sasl_auth_clients = yes
 
 # Indiquer à Postfix de livrer à un destinataire à la fois
 ## la réception d'un mail en provenance d'un expéditeur unique avec plusieurs destinataire ne fonctionnerais pas sans cette option
