@@ -35,8 +35,6 @@ readme_directory = no
 
 smtpd_tls_key_file = /etc/ssl/mail.key
 smtpd_tls_cert_file = /etc/ssl/mail.crt
-smtpd_tls_CAfile = /etc/ssl/ca-bundle.crt
-smtp_tls_CAfile =  $smtpd_tls_CAfile
 
 smtpd_use_tls=yes
 smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
@@ -50,7 +48,7 @@ alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
 myorigin = /etc/mailname
 mydestination = localhost.net, localhost
-relayhost = 
+relayhost =
 mynetworks = 127.0.0.0/8 192.168.10.0/24
 mailbox_size_limit = 0
 recipient_delimiter = +
@@ -59,14 +57,14 @@ inet_protocols = ipv4
 virtual_uid_maps = static:3000
 virtual_gid_maps = static:3000
 virtual_mailbox_base = /home/facteur
- 
+
 virtual_transport = dovecot
- 
+
 virtual_mailbox_domains = mysql:/etc/postfix/mysql_virtual_mailbox_domains.cf
 virtual_mailbox_maps = mysql:/etc/postfix/mysql_virtual_mailbox_maps.cf
 virtual_alias_maps = mysql:/etc/postfix/mysql_virtual_alias_maps.cf
 relay_domains = mysql:/etc/postfix/mysql_relay_domains.cf
- 
+
 smtpd_recipient_restrictions =
   permit_mynetworks,
   permit_sasl_authenticated,
@@ -80,7 +78,7 @@ smtpd_recipient_restrictions =
   reject_rbl_client zen.spamhaus.org,
   reject_rbl_client cbl.abuseat.org,
   reject_invalid_hostname
- 
+
 smtpd_sasl_auth_enable = yes
 smtpd_sasl_security_options = noanonymous
 broken_sasl_auth_clients = yes
