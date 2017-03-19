@@ -56,6 +56,9 @@
 - name: Copy dovecot config files - dovecot-mysql.conf
   template: src=dovecot-mysql.conf dest=/etc/dovecot/ owner=root mode=655
 
+- name: Copy dovecot config file - 10-ssl.conf
+  copy: src=etc-dovecot-conf.d-10-ssl.conf dest=/etc/dovecot/conf.d/10-ssl.conf owner=root mode=644
+
 - name: Copy postfixadmin config files - dbconfig.inc.php pfxadmin
   template: src=dbconfig.inc.php dest=/etc/postfixadmin/ owner=root mode=655
 
