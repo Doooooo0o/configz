@@ -28,7 +28,7 @@ roles
  * provides a complete **mail** server for a given domain name and the vdomain capability for other domains.
  * **Note** : This role starts in order : common, mariadb, and mail. If you don't want one of them, please comment out.
  * **Note2** : If you already have a SQL server, **it wont erase the original config**, but it needs a ``~/.my.cnf``.
- * **TODO** : 
+ * **TODO** :
      * Razor/Pyzor
      * Roundcube
      * Simplify template copy
@@ -55,10 +55,14 @@ roles
  * use standard installation method (conf in /etc, link binary to /usr/local/bin)
  * provide bonus hook to create files when problems occurs (additionnally to send emails), allowing monitoring with standard tool (ie xymon and else)
  * Possibility to use beta version in file directory: hard coded for the moment, name the file openvz-diff-backups_v0.9.8-beta.tar.gz and use -e beta=true on command line
-
+* rudder-node
+ * https://www.rudder-project.org
+ * allow to configure a debian/ubuntu rudder node to report to a rudder server
+ * you need a working rudder-server (https://www.rudder-project.org/doc-4.1/_install_rudder_server.html)
+ * use rudder_server variable to configure your rudderserver IP (rudder advice to use IP addresses instead of DNS)
 
 example host file
-===== 
+=====
 
 ```yaml
 
@@ -77,7 +81,7 @@ ntp_servers:
 disable_ipv6: true
 
 # Update
-deb_packages_to_update: 
+deb_packages_to_update:
   - apache2
 
 centos_packages_to_update:
@@ -130,7 +134,7 @@ xymon_checks: "#" ## Checks to use for this client. Default '#' do a simple ping
 
 #ovzdb
 ## You can duplicate backup locally and remotely
-## by using openvz host as backup_server and 
+## by using openvz host as backup_server and
 ## remote server as upload_server
 ## I advice to customize cron hour to have
 ## backup, then purge, then upload
@@ -146,7 +150,8 @@ upload_minute: 10
 upload_hour: 05
 admin_email: "your_email@example.com"
 
+# rudder-node
+rudder_server: 192.168.0.100
 # vim: set textwidth=0 ft=yaml:
 
 ```
-
