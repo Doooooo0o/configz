@@ -1,0 +1,10 @@
+---
+# handler du role rudder-node
+- name: rudder-start
+  service: name=rudder state=restarted
+
+- name: agent-inventory
+  command: rudder agent inventory
+
+- name: agent-run
+  command: rudder agent run

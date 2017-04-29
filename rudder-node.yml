@@ -1,0 +1,10 @@
+---
+# Playbook permettant d'installer une node rudder et configurer le retour vers le rudder server
+
+- name: Install rudder-node
+  hosts: all
+  user: root
+  gather_facts: yes
+
+  roles:
+    - rudder-node
