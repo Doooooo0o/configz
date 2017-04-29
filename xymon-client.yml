@@ -1,0 +1,8 @@
+---
+
+- name: Install and configure xymon-client or xymon-server
+  hosts: all
+  user: root
+  gather_facts: yes
+  roles:
+    - xymon-client

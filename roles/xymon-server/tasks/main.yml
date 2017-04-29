@@ -1,0 +1,82 @@
+---
+##
+##
+## Role to install xymon client or xymon server on host depending what is needed
+##
+## Tags :
+##   - xymon-server : binaries and configuration server side
+##   - xymon-client : binaries and configuration client side (need a working server)
+##   - client-configuration : used to configure client only (no binaries)
+##   - client-packages : used only install client binaries (no configuration)
+##   - server-configuration : used to configure server only (no binaries)
+##   - server-packages : used to only install server binaries (no configuration)
+########
+
+##Check vars
+- name: check xymon_server
+  fail: msg="Missing variable xymon_server"
+  tags:
+    - xymon-client
+    - xymon-server
+  when: xymon_server is not defined
+
+- name: check xymon_checks
+  fail: msg="Missing variable xymon_checks"
+  tags:
+    - xymon-client
+    - client-configuration
+  when: xymon_checks is not defined
+
+- name: check monitoring_ip
+  fail: msg="Missing variable monitoring_ip"
+  tags:
+    - xymon-client
+    - client-configuration
+  when: monitoring_ip is not defined
+
+- name: check server htpasswd name
+  fail: msg="Missing variable xymon_htname"
+  tags:
+    - xymon-server
+    - server-configuration
+  when: xymon_htname is not defined
+
+- name: check server htpasswd password
+  fail: msg="Missing variable xymon_htpasswd"
+  tags:
+    - xymon-server
+    - server-configuration
+  when: xymon_htpasswd is not defined
+
+## Custom Facts
+
+- name: Set Facts Debian
+  set_fact:
+    xymon_cfg_path: "/usr/lib/hobbit/client/etc/clientlaunch.d"
+    xymon_ext_path: "/usr/lib/hobbit/client/ext"
+    xymon_binary: "/usr/lib/hobbit/client/bin/bb"
+    client_name: "hobbit"
+    client_name_cfg: "$HOBBITCLIENTHOME"
+    client_name_logs: "$BBCLIENTLOGS"
+  tags:
+    - xymon-client
+    - xymon-server
+    - configuration
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Set Facts CentOs
+  set_fact:
+    xymon_cfg_path: "/etc/xymon-client/client.d"
+    xymon_ext_path: "/etc/xymon-client/ext"
+    xymon_binary: "/usr/share/xymon-client/bin/xymon"
+    client_name: "xymon"
+    client_name_cfg: "$XYMONCLIENTHOME"
+    client_name_logs: "$XYMONCLIENTLOGS"
+  tags:
+    - xymon-client
+    - xymon-server
+    - configuration
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
+
+##Main tasks
+- include: server.yml

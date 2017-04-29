@@ -37,13 +37,13 @@ roles
  * provides a lambda **MariaDB** server peered on ``127.0.0.1:3306`` with ``root`` MySQL password on ``~/.my.cnf``
 * ownCloud
  * provides a simple instance of **ownCloud**, with ``NGINX, PHP5-FPM, and MariaDB``
-* xymon
+* xymon-client and xymon-server
  * https://www.xymon.com/
  * Provide installation of xymon server and xymon client monitoring system
  * Available for Debian (6 to 8) and Centos (6 to 7). **WARN** : xymon-server only for Debian (Centos dependencies are really hard to automate)
  * Configure apache for xymon-server
  * Configure xymon client and add the client in xymon server configuration to allow fetch data
- * **Note** : Using xymon-client tag needs a working xymon-server (whenever the server was installed with the playbook or not)
+ * **Note** : Using xymon-client tag/role needs a working xymon-server (whenever the server was installed with the playbook or not)
  * Cloud be (theoretically, to be tested) used to update xymon server binaries to last stable release
 * ovzdb
  * http://projets.developpeur-neurasthenique.fr/projects/openvz-diff-backups

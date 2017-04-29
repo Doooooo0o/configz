@@ -3,7 +3,7 @@
 ##
 ## Role to install xymon client or xymon server on host depending what is needed
 ##
-## Tags : 
+## Tags :
 ##   - xymon-server : binaries and configuration server side
 ##   - xymon-client : binaries and configuration client side (need a working server)
 ##   - client-configuration : used to configure client only (no binaries)
@@ -15,39 +15,39 @@
 ##Check vars
 - name: check xymon_server
   fail: msg="Missing variable xymon_server"
-  tags: 
+  tags:
     - xymon-client
     - xymon-server
   when: xymon_server is not defined
 
 - name: check xymon_checks
   fail: msg="Missing variable xymon_checks"
-  tags: 
+  tags:
     - xymon-client
     - client-configuration
   when: xymon_checks is not defined
-  
+
 - name: check monitoring_ip
   fail: msg="Missing variable monitoring_ip"
-  tags: 
+  tags:
     - xymon-client
     - client-configuration
   when: monitoring_ip is not defined
 
 - name: check server htpasswd name
   fail: msg="Missing variable xymon_htname"
-  tags: 
+  tags:
     - xymon-server
     - server-configuration
   when: xymon_htname is not defined
 
 - name: check server htpasswd password
   fail: msg="Missing variable xymon_htpasswd"
-  tags: 
+  tags:
     - xymon-server
     - server-configuration
   when: xymon_htpasswd is not defined
-  
+
 ## Custom Facts
 
 - name: Set Facts Debian
@@ -58,12 +58,12 @@
     client_name: "hobbit"
     client_name_cfg: "$HOBBITCLIENTHOME"
     client_name_logs: "$BBCLIENTLOGS"
-  tags: 
+  tags:
     - xymon-client
     - xymon-server
     - configuration
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-  
+
 - name: Set Facts CentOs
   set_fact:
     xymon_cfg_path: "/etc/xymon-client/client.d"
@@ -72,15 +72,11 @@
     client_name: "xymon"
     client_name_cfg: "$XYMONCLIENTHOME"
     client_name_logs: "$XYMONCLIENTLOGS"
-  tags: 
+  tags:
     - xymon-client
     - xymon-server
     - configuration
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
 
 ##Main tasks
-- include: server.yml
 - include: client.yml
-
-
-
