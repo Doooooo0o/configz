@@ -1,9 +1,16 @@
-configz
+## configz
 =======
 
 Yet another ansible's playbook repository
 
-roles
+## playbooks
+======
+* postint.yml
+ * run common role to install you packages, deploy ssh, keys, ...
+* posting-full.yml
+ * use roles common, xymon-client and rudder-node to have a fully compliant server 
+
+## roles
 ======
 
 * Common
@@ -61,7 +68,7 @@ roles
  * you need a working rudder-server (https://www.rudder-project.org/doc-4.1/_install_rudder_server.html)
  * use rudder_server variable to configure your rudderserver IP (rudder advice to use IP addresses instead of DNS)
 
-example host file
+## example host file
 =====
 
 ```yaml

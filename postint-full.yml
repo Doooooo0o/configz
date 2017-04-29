@@ -1,0 +1,14 @@
+---
+# Playbook permettant de deployer un hote complet avec les roles common, xymon-client et rudder-node
+
+- name: Deployer un hote complet avec common, xymon-client et rudder-node
+  hosts: all
+  user: root
+  gather_facts: yes
+
+  roles:
+    - common
+    - xymon-client
+    - rudder-node
+
+# vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:
