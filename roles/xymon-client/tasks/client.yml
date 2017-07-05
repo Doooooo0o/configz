@@ -27,15 +27,15 @@
     - client-configuration
   lineinfile: name=/etc/default/hobbit-client regexp='^HOBBITSERVERS=' line='HOBBITSERVERS="{{xymon_server}}"'
   notify: restart hobbit-client
-  when: ansible_distribution == 'Debian' and ansible_distribution_release != 'jessie'
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int < 8
 
-- name: Configure Xymon ip on Jessie
+- name: Configure Xymon ip on debian >= 8
   tags: 
     - xymon-client
     - client-configuration
   lineinfile: name=/etc/default/xymon-client regexp='^XYMONSERVERS=' line='XYMONSERVERS="{{xymon_server}}"'
   notify: restart xymon-client
-  when: ansible_distribution == 'Debian' and ansible_distribution_release == 'jessie'
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 8
 
 - name: Configure Xymon ip on CentOS
   tags: 
@@ -51,15 +51,15 @@
     - client-configuration
   lineinfile: name=/etc/default/hobbit-client regexp='^CLIENTHOSTNAME=' line='CLIENTHOSTNAME="{{ansible_fqdn}}"'
   notify: restart hobbit-client
-  when: ansible_distribution == 'Debian' and ansible_distribution_release != 'jessie'  # and ansible_distribution_version < '7'
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int < 8
 
-- name: Configure local Xymon name on Jessie
+- name: Configure local Xymon name on Debian >=8
   tags: 
     - xymon-client
     - client-configuration
   lineinfile: name=/etc/default/xymon-client regexp='^CLIENTHOSTNAME=' line='CLIENTHOSTNAME="{{ansible_fqdn}}"'
   notify: restart hobbit-client
-  when: ansible_distribution == 'Debian' and ansible_distribution_release == 'jessie' 
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 8
 
 - name: Configure local Xymon name on Centos
   tags: 
