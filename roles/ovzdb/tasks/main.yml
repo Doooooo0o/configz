@@ -106,8 +106,8 @@
   tags:
     - backup
 
-- name: install openvz-diff-backups - cron for replicate
-  cron: name="upload ct backups with openvz-diff-backups" minute="{{ upload_minute }}" hour="{{ upload_hour }}" job='/usr/local/bin/openvz-diff-backups replicate all 0- -q -c /etc/openvz-diff-backups.conf > /dev/null'
+- name: install openvz-diff-backups - cron for upload
+  cron: name="upload ct backups with openvz-diff-backups" minute="{{ upload_minute }}" hour="{{ upload_hour }}" job='/usr/local/bin/openvz-diff-backups upload all 0- -q -c /etc/openvz-diff-backups.conf > /dev/null'
   tags:
     - backup
 
