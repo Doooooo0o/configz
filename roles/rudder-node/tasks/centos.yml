@@ -1,0 +1,27 @@
+---
+## Install and configure rudder-agent on debian/ubuntu node
+- name: add rudder repo key -- centos
+  rpm_key: key="https://www.rudder-project.org/apt-repos/rudder_apt_key.pub" state=present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
+
+- name: add rudder repo url -- centos
+  yum_repository:
+    name: rudder
+    description: Rudder 4.1 EL repository
+    file: rudder_repo
+    baseurl: http://www.rudder-project.org/rpm-4.1/RHEL_$releasever/
+    gpgcheck: yes
+    gpgkey: http://www.rudder-project.org/rpm-4.1/RHEL_$releasever/repodata/repomd.xml.key
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
+
+- name: install rudder agent -- centos
+  yum: name=rudder-agent state=present update_cache=yes
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
+
+- name: configure rudder server -- centos
+  template:  src=policy_server.dat.tpl dest=/var/rudder/cfengine-community/policy_server.dat
+  notify:
+      - rudder-start
+      - agent-inventory
+      - agent-run
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'

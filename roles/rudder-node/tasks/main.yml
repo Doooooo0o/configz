@@ -1,30 +1,8 @@
 ---
-## Install and configure rudder-agent on debian/ubuntu node
-- name: add rudder repo key
-  apt_key: url="https://www.rudder-project.org/apt-repos/rudder_apt_key.pub" state=present
+- include: debian.yml
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-
-- name: add rudder repo url
-  apt_repository:
-    repo: 'deb http://www.rudder-project.org/apt-4.1/ {{ansible_distribution_release}} main'
-    state: present
-    filename: 'rudder'
-    update_cache: yes
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-
-- name: install rudder agent
-  apt: pkg=rudder-agent state=present update_cache=yes
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-
-- name: configure rudder server
-  template:  src=policy_server.dat.tpl dest=/var/rudder/cfengine-community/policy_server.dat
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-  notify:
-      - rudder-start
-      - agent-inventory
-      - agent-run
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+- include: centos.yml
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
 
 - fail: msg="You can now connect to your rudder server and allow new nodes"
   ignore_errors: yes
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'

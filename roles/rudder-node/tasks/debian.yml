@@ -1,0 +1,26 @@
+---
+## Install and configure rudder-agent on debian/ubuntu node
+- name: add rudder repo key -- debian
+  apt_key: url="https://www.rudder-project.org/apt-repos/rudder_apt_key.pub" state=present
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: add rudder repo url -- debian
+  apt_repository:
+    repo: 'deb http://www.rudder-project.org/apt-4.1/ {{ansible_distribution_release}} main'
+    state: present
+    filename: 'rudder'
+    update_cache: yes
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: install rudder agent -- debian
+  apt: pkg=rudder-agent state=present update_cache=yes
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: configure rudder server -- debian
+  template:  src=policy_server.dat.tpl dest=/var/rudder/cfengine-community/policy_server.dat
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  notify:
+      - rudder-start
+      - agent-inventory
+      - agent-run
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
