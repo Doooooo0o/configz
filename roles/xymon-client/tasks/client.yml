@@ -1,98 +1,20 @@
 ---
 
-## Install and configure xymon client ##
-
-# Binaries
-- name: install xymon client debian
-  apt: pkg={{item}} state=present update_cache=yes
-  tags:
-   - client-packages
-   - xymon-client
-  with_items: 
-    - xymon-client
-    - hobbit-plugins
+- include: client_debian.yml
   when: ansible_distribution == 'Debian'
+- include: client_centos.yml
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
 
-- name: Install xymon client CentOS
-  tags: 
-    - xymon-client
-    - client-packages
-  yum: pkg=xymon-client state=installed
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
-  
-# Configuration
-- name: Configure Xymon ip on old Debian
-  tags: 
-    - xymon-client
-    - client-configuration
-  lineinfile: name=/etc/default/hobbit-client regexp='^HOBBITSERVERS=' line='HOBBITSERVERS="{{xymon_server}}"'
-  notify: restart hobbit-client
-  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int < 8
-
-- name: Configure Xymon ip on debian >= 8
-  tags: 
-    - xymon-client
-    - client-configuration
-  lineinfile: name=/etc/default/xymon-client regexp='^XYMONSERVERS=' line='XYMONSERVERS="{{xymon_server}}"'
-  notify: restart xymon-client
-  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 8
-
-- name: Configure Xymon ip on CentOS
-  tags: 
-    - xymon-client
-    - client-configuration
-  lineinfile: name=/etc/sysconfig/xymon-client regexp='^XYMONSERVERS=' line='XYMONSERVERS="{{xymon_server}}"'
-  notify: restart xymon-client
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
-
-- name: Configure local Xymon name on old debian
-  tags: 
-    - xymon-client
-    - client-configuration
-  lineinfile: name=/etc/default/hobbit-client regexp='^CLIENTHOSTNAME=' line='CLIENTHOSTNAME="{{ansible_fqdn}}"'
-  notify: restart hobbit-client
-  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int < 8
-
-- name: Configure local Xymon name on Debian >=8
-  tags: 
-    - xymon-client
-    - client-configuration
-  lineinfile: name=/etc/default/xymon-client regexp='^CLIENTHOSTNAME=' line='CLIENTHOSTNAME="{{ansible_fqdn}}"'
-  notify: restart hobbit-client
-  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 8
-
-- name: Configure local Xymon name on Centos
-  tags: 
-    - xymon-client
-    - client-configuration
-  lineinfile: name=/etc/sysconfig/xymon-client regexp='^CLIENTHOSTNAME=' line='CLIENTHOSTNAME="{{ansible_fqdn}}"'
-  notify: restart xymon-client
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
-
-- name: Set xymon cron for APT
-  tags: 
-    - xymon-client
-    - client-configuration
-  cron: 
-    name="check update for Xymon"
-    minute="45"
-    hour="*/4"
-    job="apt-get update -qq > /var/lib/apt/update_output 2>&1 && [ ! -s /var/lib/apt/update_output ] && date -u > /var/lib/apt/update_success"
-    cron_file="xymon-apt"
-    state=present
-    user=root
-  when: ansible_distribution == 'Debian'
-  
 ## Add the client to xymon server
 - name: Ensure /etc/xymon/hosts.d exists
-  tags: 
+  tags:
     - xymon-client
     - client-configuration
   file: path=/etc/xymon/hosts.d state=directory
   delegate_to: "{{ xymon_server }}"
-  
+
 - name: Ensure the monitoring section file is included
-  tags: 
+  tags:
     - xymon-client
     - client-configuration
   lineinfile: dest=/etc/xymon/hosts.cfg
@@ -102,7 +24,7 @@
   when: monitoring_file is defined and monitoring_section is defined
 
 - name: Ensure /etc/xymon/hosts.d/SECTION exists if used
-  tags: 
+  tags:
     - xymon-client
     - client-configuration
   lineinfile: dest="/etc/xymon/hosts.d/{{monitoring_file}}"
@@ -115,7 +37,7 @@
   when: monitoring_file is defined and monitoring_section is defined
 
 - name: Add the host to the monitoring section file if used
-  tags: 
+  tags:
     - xymon-client
     - client-configuration
   lineinfile: dest="/etc/xymon/hosts.d/{{monitoring_file}}"
@@ -126,7 +48,7 @@
   when: monitoring_file is defined and monitoring_section is defined
 
 - name: Add the host to the cfg file without section if needed
-  tags: 
+  tags:
     - xymon-client
     - client-configuration
   lineinfile: dest=/etc/xymon/hosts.cfg

@@ -1,0 +1,53 @@
+---
+
+## Install and configure xymon client Centos ##
+
+# Custom facts
+- name: Set Facts CentOs
+  set_fact:
+    xymon_cfg_path: "/etc/xymon-client/client.d"
+    xymon_ext_path: "/etc/xymon-client/ext"
+    xymon_binary: "/usr/share/xymon-client/bin/xymon"
+    client_name: "xymon"
+    client_name_cfg: "$XYMONCLIENTHOME"
+    client_name_logs: "$XYMONCLIENTLOGS"
+  tags:
+    - xymon-client
+    - xymon-server
+    - configuration
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
+
+# Binaries
+- name: add xymon repo url -- centos
+  yum_repository:
+    name: Xymon
+    description: Xymon RPMs
+    file: xymon_repos
+    baseurl: http://terabithia.org/rpms/xymon/el$releasever/x86_64/
+    gpgcheck: yes
+    gpgkey: http://terabithia.org/rpms/RPM-GPG-KEY-JCLEAVER
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
+
+- name: Install xymon client CentOS
+  tags:
+    - xymon-client
+    - client-packages
+  yum: pkg=xymon-client state=installed
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
+
+- name: Configure Xymon ip on CentOS
+  tags:
+    - xymon-client
+    - client-configuration
+  lineinfile: name=/etc/sysconfig/xymon-client regexp='^XYMONSERVERS=' line='XYMONSERVERS="{{xymon_server}}"'
+  notify: restart xymon-client
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
+
+
+- name: Configure local Xymon name on Centos
+  tags:
+    - xymon-client
+    - client-configuration
+  lineinfile: name=/etc/sysconfig/xymon-client regexp='^CLIENTHOSTNAME=' line='CLIENTHOSTNAME="{{ansible_fqdn}}"'
+  notify: restart xymon-client
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'

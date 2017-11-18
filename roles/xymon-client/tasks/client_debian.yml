@@ -1,0 +1,77 @@
+---
+
+## Install and configure xymon client Debian ##
+
+## Custom Facts
+
+- name: Set Facts Debian
+  set_fact:
+    xymon_cfg_path: "/usr/lib/hobbit/client/etc/clientlaunch.d"
+    xymon_ext_path: "/usr/lib/hobbit/client/ext"
+    xymon_binary: "/usr/lib/hobbit/client/bin/bb"
+    client_name: "hobbit"
+    client_name_cfg: "$HOBBITCLIENTHOME"
+    client_name_logs: "$BBCLIENTLOGS"
+  tags:
+    - xymon-client
+    - xymon-server
+    - configuration
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+# Binaries
+- name: install xymon client debian
+  apt: pkg={{item}} state=present update_cache=yes
+  tags:
+   - client-packages
+   - xymon-client
+  with_items:
+    - xymon-client
+    - hobbit-plugins
+  when: ansible_distribution == 'Debian'
+
+# Configuration
+- name: Configure Xymon ip on old Debian
+  tags:
+    - xymon-client
+    - client-configuration
+  lineinfile: name=/etc/default/hobbit-client regexp='^HOBBITSERVERS=' line='HOBBITSERVERS="{{xymon_server}}"'
+  notify: restart hobbit-client
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int < 8
+
+- name: Configure Xymon ip on debian >= 8
+  tags:
+    - xymon-client
+    - client-configuration
+  lineinfile: name=/etc/default/xymon-client regexp='^XYMONSERVERS=' line='XYMONSERVERS="{{xymon_server}}"'
+  notify: restart xymon-client
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 8
+
+- name: Configure local Xymon name on old debian
+  tags:
+    - xymon-client
+    - client-configuration
+  lineinfile: name=/etc/default/hobbit-client regexp='^CLIENTHOSTNAME=' line='CLIENTHOSTNAME="{{ansible_fqdn}}"'
+  notify: restart hobbit-client
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int < 8
+
+- name: Configure local Xymon name on Debian >=8
+  tags:
+    - xymon-client
+    - client-configuration
+  lineinfile: name=/etc/default/xymon-client regexp='^CLIENTHOSTNAME=' line='CLIENTHOSTNAME="{{ansible_fqdn}}"'
+  notify: restart hobbit-client
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 8
+
+- name: Set xymon cron for APT
+  tags:
+    - xymon-client
+    - client-configuration
+  cron:
+    name="check update for Xymon"
+    minute="45"
+    hour="*/4"
+    job="apt-get update -qq > /var/lib/apt/update_output 2>&1 && [ ! -s /var/lib/apt/update_output ] && date -u > /var/lib/apt/update_success"
+    cron_file="xymon-apt"
+    state=present
+    user=root
+  when: ansible_distribution == 'Debian'

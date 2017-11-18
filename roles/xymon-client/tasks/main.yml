@@ -48,35 +48,5 @@
     - server-configuration
   when: xymon_htpasswd is not defined
 
-## Custom Facts
-
-- name: Set Facts Debian
-  set_fact:
-    xymon_cfg_path: "/usr/lib/hobbit/client/etc/clientlaunch.d"
-    xymon_ext_path: "/usr/lib/hobbit/client/ext"
-    xymon_binary: "/usr/lib/hobbit/client/bin/bb"
-    client_name: "hobbit"
-    client_name_cfg: "$HOBBITCLIENTHOME"
-    client_name_logs: "$BBCLIENTLOGS"
-  tags:
-    - xymon-client
-    - xymon-server
-    - configuration
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-
-- name: Set Facts CentOs
-  set_fact:
-    xymon_cfg_path: "/etc/xymon-client/client.d"
-    xymon_ext_path: "/etc/xymon-client/ext"
-    xymon_binary: "/usr/share/xymon-client/bin/xymon"
-    client_name: "xymon"
-    client_name_cfg: "$XYMONCLIENTHOME"
-    client_name_logs: "$XYMONCLIENTLOGS"
-  tags:
-    - xymon-client
-    - xymon-server
-    - configuration
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
-
 ##Main tasks
 - include: client.yml
