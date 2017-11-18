@@ -11,5 +11,4 @@
   tags: packages
   yum: name={{item}} state=latest update_cache=yes
   with_items: yum_packages_to_update
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
-
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'

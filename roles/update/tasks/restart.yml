@@ -11,9 +11,11 @@
   with_items:
       - wrapper.sh
       - ignore
+  when: ansible_distribution == 'Debian'
 
 - name: Execute Wrapper
   tags: restart
   shell: /bin/bash -x /tmp/wrapper.sh
+  when: ansible_distribution == 'Debian'
 
 #vim: set textwidth=0 ft=yaml ts=2 sw=2 expandtab:

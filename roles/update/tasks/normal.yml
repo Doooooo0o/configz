@@ -1,10 +1,10 @@
 ---
 - name: check LTS repo for squeeze
-  tags: 
+  tags:
     - update
     - normal
   apt_repository: repo='deb http://http.debian.net/debian/ squeeze-lts main' state=present
-  when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '6' 
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '6'
 
 
 - name: apt-get update for my Monitoring
@@ -27,4 +27,4 @@
 - name: yum update
   tags: normal
   yum: name=* state=latest
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux'
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
