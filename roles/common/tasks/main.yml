@@ -34,13 +34,13 @@
 - name: Deploy SSH keys
   tags: ssh_keys
   authorized_key: user=root key="{{item}}"
-  with_items: admin_ssh_keys
+  with_items: "{{ admin_ssh_keys }}"
 
 # Packages
 
 - name: Install default packages Debian.
   apt: pkg={{item}} state=latest update_cache=yes
-  with_items: default_packages_debian 
+  with_items: "{{ default_packages_debian }}"
   when: ansible_distribution == 'Debian'
 
 # Configure NTP
