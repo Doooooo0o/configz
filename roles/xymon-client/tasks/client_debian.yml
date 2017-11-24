@@ -59,7 +59,7 @@
     - xymon-client
     - client-configuration
   lineinfile: name=/etc/default/xymon-client regexp='^CLIENTHOSTNAME=' line='CLIENTHOSTNAME="{{ansible_fqdn}}"'
-  notify: restart hobbit-client
+  notify: restart xymon-client
   when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 8
 
 - name: Set xymon cron for APT
