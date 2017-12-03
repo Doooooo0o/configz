@@ -26,7 +26,7 @@
 ## Ref : src option from http://docs.ansible.com/ansible/unarchive_module.html
 - name: install openvz-diff-backups - download
   get_url:
-     url=http://download.openvz-diff-backups.fr/releases/openvz-diff-backups_v0.9.9.2-beta.tar.gz
+          url=http://download.openvz-diff-backups.fr/releases/openvz-diff-backups_v0.9.9.11-beta.tar.gz
      dest=/tmp/openvz-diff-backup.tar.gz
      force=yes
   tags:
