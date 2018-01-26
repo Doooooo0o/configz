@@ -1,0 +1,5 @@
+- name: restart_unbound
+  systemd: state=restarted name=unbound
+
+- name: enable_unbound
+  systemd: enabled=yes name=unbound

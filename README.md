@@ -67,6 +67,9 @@ Yet another ansible's playbook repository
  * allow to configure a debian/ubuntu rudder node to report to a rudder server
  * you need a working rudder-server (https://www.rudder-project.org/doc-4.1/_install_rudder_server.html)
  * use rudder_server variable to configure your rudderserver IP (rudder advice to use IP addresses instead of DNS)
+* unbound
+ * Possibility to deploy unbound as a local resolver, with forwading zone to your local DNS server (ie .lan, .home, ...)
+ * You need to add unbound variables (see below)
 
 ## example host file
 =====
@@ -160,5 +163,8 @@ admin_email: "your_email@example.com"
 # rudder-node
 rudder_server: 192.168.0.100
 # vim: set textwidth=0 ft=yaml:
+
+unbound_local_zone: "lan"
+unbound_forward_dns: XXX.XXX.XXX.XXX
 
 ```

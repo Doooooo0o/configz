@@ -1,0 +1,5 @@
+---
+## Variable pour RedHat OS basee sur ansible_os_family
+## Attention, Centos, VirtuozzoLinux 4.5 et Virtuozzo 7 renvoient RedHat comme ansible_os_family
+
+unbound_conf_path: "/etc/unbound/conf.d/"

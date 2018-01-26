@@ -1,0 +1,6 @@
+server:
+	domain-insecure: "{{ unbound_local_zone }}"
+
+forward-zone:
+    name: "{{ unbound_local_zone }}"
+    forward-addr: {{ unbound_forward_dns }}

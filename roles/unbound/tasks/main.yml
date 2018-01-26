@@ -1,0 +1,40 @@
+---
+
+- name: Import OS variables
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: install unbound
+  package:
+    name: unbound
+    state: latest
+  notify: 
+    - enable_unbound
+    - restart_unbound
+
+
+- name: upload conf for local DNS
+  copy:
+    src: localdns.conf
+    dest: "{{ unbound_conf_path }}/localdns.conf"
+  notify:
+    - restart_unbound
+
+- name: upload forward zone template
+  template:
+    src: forwardzone.conf.j2
+    dest: "{{ unbound_conf_path }}/forwardzone.conf"
+  notify: 
+    - restart_unbound
+
+- name: download root file from NIC
+  get_url:
+    url: ftp://FTP.INTERNIC.NET/domain/named.cache
+    dest: /etc/unbound/root-hints.cache
+  notify: 
+    - restart_unbound
+
+- name: Add cron to refresh root zone 
+  cron:
+    name: "refresh DNS root zone"
+    special_time: monthly
+    job: "curl -o /etc/unbound/root-hints.cache ftp://FTP.INTERNIC.NET/domain/named.cache"

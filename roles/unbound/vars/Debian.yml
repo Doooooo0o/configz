@@ -1,0 +1,4 @@
+---
+##Variables pour Debian OS
+
+unbound_conf_path: "/etc/unbound/unbound.conf.d/"
