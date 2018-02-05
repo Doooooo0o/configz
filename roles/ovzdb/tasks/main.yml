@@ -10,7 +10,7 @@
   when: ansible_virtualization_type != 'openvz' and ansible_virtualization_role !='host'
 
 #### Download and extract openvz-diff-backup ####
-- name: install openvz-diff-backups - prerequisite
+- name: install openvz-diff-backups - prerequisite Debian
   apt: pkg={{item}} state=present update_cache=yes
   tags:
     - backup
@@ -21,6 +21,20 @@
     - bc
     - uuid-runtime
     - pbzip2
+  when: ansible_distribution == 'Debian'
+
+- name: install openvz-diff-backups - prerequisite Centos
+  yum: name={{ item }} state=present update_cache=yes
+  tags:
+    - backup
+  with_items:
+    - bind-utils
+    - pcre
+    - rsync
+    - bc
+    - util-linux
+    - pbzip2
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
 
 ## TODO : possibility to reduce to one task with ansible 2.0
 ## Ref : src option from http://docs.ansible.com/ansible/unarchive_module.html
