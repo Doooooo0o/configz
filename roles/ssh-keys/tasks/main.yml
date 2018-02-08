@@ -1,0 +1,34 @@
+---
+# Synchronization des clefs SSH avec option de suppression via admin_blacklist_ssh_keys
+# En utilisant la variable hash_behaviour = merge dans la configuration ansible,
+# permet de deployer differentes clefs sur differentes serveurs en mergeant les dictionnaire
+
+- name: Check vars
+  fail: 
+    msg: "Missing variable admin_ssh_keys"
+  tags: ssh_keys
+  when: admin_ssh_keys is not defined
+
+- name: Install libselinux-python needed for centos
+  tags: ssh_keys
+  yum: 
+    name: libselinux-python
+    state: installed
+  when: ansible_distribution == 'CentOS'
+
+- name: Remove old SSH keys
+  tags: ssh_keys
+  authorized_key: 
+    user: root 
+    key: "{{ item.value }}"
+    state: absent
+  with_dict: "{{ admin_blacklist_ssh_keys }}"
+  when: admin_blacklist_ssh_keys is defined
+
+- name: Deploy SSH keys
+  tags: ssh_keys
+  authorized_key: 
+    user: root 
+    key: "{{ item.value }}"
+    state: present
+  with_dict: "{{ admin_ssh_keys }}"

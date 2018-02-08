@@ -11,10 +11,6 @@
 
 # Check mandatory variables
 - name: Check vars
-  fail: msg="Missing variable admin_ssh_keys"
-  when: admin_ssh_keys is not defined
-
-- name: Check vars
   fail: msg="Missing variable default_packages_debian"
   when: default_packages_debian is not defined
 
@@ -29,12 +25,6 @@
 - name: Check vars
   fail: msg="Missing variable disable_ipv6"
   when: disable_ipv6 is not defined
-
-# SSH
-- name: Deploy SSH keys
-  tags: ssh_keys
-  authorized_key: user=root key="{{item}}"
-  with_items: "{{ admin_ssh_keys }}"
 
 # Packages
 
