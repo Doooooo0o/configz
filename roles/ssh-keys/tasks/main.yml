@@ -16,6 +16,14 @@
     state: installed
   when: ansible_distribution == 'CentOS'
 
+- name: Deploy SSH keys
+  tags: ssh_keys
+  authorized_key: 
+    user: root 
+    key: "{{ item.value }}"
+    state: present
+  with_dict: "{{ admin_ssh_keys }}"
+
 - name: Remove old SSH keys
   tags: ssh_keys
   authorized_key: 
@@ -24,11 +32,3 @@
     state: absent
   with_dict: "{{ admin_blacklist_ssh_keys }}"
   when: admin_blacklist_ssh_keys is defined
-
-- name: Deploy SSH keys
-  tags: ssh_keys
-  authorized_key: 
-    user: root 
-    key: "{{ item.value }}"
-    state: present
-  with_dict: "{{ admin_ssh_keys }}"
