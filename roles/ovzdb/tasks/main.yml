@@ -111,7 +111,7 @@
   when: not beta | bool
 
 - name: install openvz-diff-backups - cron for dump
-  cron: name="backup container with openvz-diff-backups" minute="{{ backup_minute }}" hour="{{ backup_hour }}" job='/usr/local/bin/openvz-diff-backups backup all auto -q  -c /etc/openvz-diff-backups.conf> /dev/null'
+  cron: name="backup container with openvz-diff-backups" minute="{{ backup_minute }}" hour="{{ backup_hour }}" job='/usr/local/bin/openvz-diff-backups backup all hold -q  -c /etc/openvz-diff-backups.conf> /dev/null'
   tags:
     - backup
 
