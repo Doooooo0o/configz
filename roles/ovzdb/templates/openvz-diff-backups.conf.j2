@@ -12,7 +12,7 @@ BACKUP_SSH_PATH="root@{{ backup_server }}:{{ backup_dir }}"
 #compatibilite ovzdb > 0.9.3
 MASTER_SSH_PATH="root@{{ backup_server }}:{{ backup_dir }}"
 #changement du cypher SSH vers chacha pour plus de secu
-MASTER_SSH_OPTIONS="ssh -p 22 -c chacha20-poly1305@openssh.com -o Compression=no -o ConnectTimeout=60 -o ControlMaster=auto -o ControlPath=/root/openvz-diff-backups_%r@%h:%p -o ControlPersist=3600 -o ForwardX11=no -o PasswordAuthentication=no -o PreferredAuthentications=publickey -o StrictHostKeyChecking=ask" 
+MASTER_SSH_OPTIONS="ssh -p 22 -c chacha20-poly1305@openssh.com -o Compression=no -o ConnectTimeout=60 -o ControlMaster=auto -o ControlPath=/root/openvz-diff-backups_%r@%h:%p -o ControlPersist=3600 -o ForwardX11=no -o PasswordAuthentication=no -o PreferredAuthentications=publickey -o StrictHostKeyChecking=ask"
 BACKUP_SKIP_STOPPED_CONTAINERS="all"
 UPLOAD_SKIP_HOSTS=other
 #compatibilite ovzdb < 0.9.2
