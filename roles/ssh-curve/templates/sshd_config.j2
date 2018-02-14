@@ -1,0 +1,22 @@
+
+Port {{ ssh_port|default(22) }}
+ListenAddress {{ ssh_ipv4_listen|default("0.0.0.0") }}
+ListenAddress {{ ssh_ipv6_listen|default("::") }}
+HostKey /etc/ssh/ssh_host_ed25519_key
+Ciphers chacha20-poly1305@openssh.com
+MACs umac-128-etm@openssh.com
+KexAlgorithms curve25519-sha256@libssh.org
+AuthorizedKeysFile	{{ ssh_authorizedkeysfile|default(".ssh/authorized_keys") }}
+UseDNS no
+SyslogFacility AUTHPRIV
+PasswordAuthentication {{ ssh_pwd_authent|default("no") }}
+ChallengeResponseAuthentication no
+GSSAPIAuthentication yes
+GSSAPICleanupCredentials no
+UsePAM yes
+UsePrivilegeSeparation sandbox
+X11Forwarding yes
+AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
+AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
+AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
+Subsystem	sftp	{{ sftp_path }}

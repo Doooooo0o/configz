@@ -1,0 +1,11 @@
+Host *
+	GSSAPIAuthentication no
+	ForwardX11Trusted yes
+	SendEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
+	SendEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
+	SendEnv LC_IDENTIFICATION LC_ALL LANGUAGE
+	SendEnv XMODIFIERS
+    KexAlgorithms curve25519-sha256@libssh.org
+    Ciphers chacha20-poly1305@openssh.com
+    MACs umac-128-etm@openssh.com
+    UseRoaming no

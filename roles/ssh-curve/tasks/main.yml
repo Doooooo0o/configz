@@ -1,0 +1,56 @@
+---
+
+# Ce role permet de deployer des fichiers de configurations SSH n'utilisant que des 
+# algorithmes consideres comme sur, notamment bases sur les courbes elliptiques.
+# Adaptation de https://blog.arnaudminable.net/secure-shell-mon-amour-dechu/
+# WARN : peut poser des problemes de compatibilites avec les vieux SSH (< 6.7)
+
+- name: Import OS variables
+  include_vars: "{{ ansible_os_family }}.yml"
+  tags:
+    - ssh-curve
+
+- name: upload sshd_config
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    backup: yes
+  tags:
+    - ssh-curve
+  notify: restart ssh
+
+- name: upload ssh_config (for client connexion)
+  copy:
+    src: ssh_config
+    dest: /etc/ssh/ssh_config
+    backup: yes
+  tags:
+    - ssh-curve
+  notify: restart ssh
+
+- name: remove obsoletes rsa and dsa keys - WARN! This WILL cause BREAKING ATTEMPT messages
+  file:
+    path: "{{ item }}"
+    state: absent
+  tags:
+    - ssh-curve
+  with_items:
+    - /etc/ssh/ssh_host_ecdsa_key
+    - /etc/ssh/ssh_host_ecdsa_key.pub
+    - /etc/ssh/ssh_host_rsa_key
+    - /etc/ssh/ssh_host_rsa_key.pub
+    - /etc/ssh/ssh_host_ed25519_key
+    - /etc/ssh/ssh_host_ed25519_key.pub
+  notify: restart ssh
+
+- name: regenerate sshd ed25519 key to avoid cloudinit identikey problem
+  command: ssh-keygen -q -N "" -C "" -o -a 1000 -t ed25519 -f "/etc/ssh/ssh_host_ed25519_key"
+  tags:
+    - ssh-curve
+  notify: restart ssh
+
+- name: generate a secure ed25519 key you could ssh-copy to other servers (do not overwrite existing key by default)
+  command: ssh-keygen -t ed25519 -o -a 1000 -C "" -N "" -q -f "/root/.ssh/id_ed25519"
+  ignore_errors: yes
+  tags:
+    - ssh-curve

@@ -1,0 +1,5 @@
+---
+##Variables pour Debian OS
+
+sftp_path: "/usr/lib/openssh/sftp-server"
+ssh_daemon: "ssh"

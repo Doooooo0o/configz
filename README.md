@@ -74,6 +74,14 @@ Yet another ansible's playbook repository
 * unbound
  * Possibility to deploy unbound as a local resolver, with forwading zone to your local DNS server (ie .lan, .home, ...)
  * You need to add unbound variables (see below)
+* ssh-curve : based from https://blog.arnaudminable.net/secure-shell-mon-amour-dechu/
+ * DISCLAIMER : using this role WILL trigger "breaking attempt messages" with SSH as server keys are changed, do not forget to clean your know_hosts file(s)
+ * needs debian jessie or later, centos 7 or later
+ * configure ssh to use exclusively actual most secure cipher and algorithms
+ * allow ssh port, listen address, password authent customization
+ * generate ed25519 keys for server instead of RSA
+ * configure ssh client to use strong algorithms
+ * will create compatibility problem with old ssh versions (openwrt, old putty, debian wheezy)
 
 ## example host file
 =====
@@ -171,5 +179,12 @@ rudder_server: 192.168.0.100
 
 unbound_local_zone: "lan"
 unbound_forward_dns: XXX.XXX.XXX.XXX
+
+# ssh-curve
+# ssh_port: (default 22)
+# ssh_ipv4_listen: (default "0.0.0.0")
+# ssh_ipv6_listen: (default "::")
+# ssh_authorizedkeysfile: (default ".ssh/authorized_keys")
+# ssh_pwd_authent: (default "no")
 
 ```
