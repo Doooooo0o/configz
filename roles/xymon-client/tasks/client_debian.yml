@@ -75,3 +75,26 @@
     state=present
     user=root
   when: ansible_distribution == 'Debian'
+
+- name: Disable sonde for client
+  tags:
+    - xymon-client
+    - client-configuration
+  lineinfile: 
+    name: /etc/xymon/clientlaunch.d/{{ item }}.cfg
+    regexp: '#DISABLED'
+    state: present
+    line: 'DISABLED'
+    backrefs: yes
+  with_items: "{{ xymon_disabled_sondes }}"
+  notify: restart xymon-client
+  when: ansible_distribution == 'Debian' and xymon_disabled_sondes is defined
+
+- name: Drop disabled sonde on Xymon server
+  tags:
+    - xymon-client
+    - client-configuration
+  command: /usr/lib/xymon/server/bin/xymon 127.0.0.1 "drop ansible_fqdn {{ item }}"
+  with_items: "{{ xymon_disabled_sondes }}"
+  delegate_to: "{{ xymon_server }}"
+  when: ansible_distribution == 'Debian' and xymon_disabled_sondes is defined
