@@ -42,8 +42,8 @@
     - client-configuration
   lineinfile: dest="/etc/xymon/hosts.d/{{monitoring_file}}"
               insertafter="^group {{monitoring_section}}"
-              regexp="^{{monitoring_ip}}\s+{{ansible_fqdn}} .*$"
-              line="{{monitoring_ip}} {{ansible_fqdn}} {{xymon_checks}}"
+              regexp="^{{monitoring_ip}}\s+{{ansible_nodename}} .*$"
+              line="{{monitoring_ip}} {{ansible_nodename}} {{xymon_checks}}"
   delegate_to: "{{ xymon_server }}"
   when: monitoring_file is defined and monitoring_section is defined
 
@@ -53,7 +53,7 @@
     - client-configuration
   lineinfile: dest=/etc/xymon/hosts.cfg
               insertafter='^group Servers'
-              regexp="^{{monitoring_ip}}\s+{{ansible_fqdn}} .*$"
-              line="{{monitoring_ip}} {{ansible_fqdn}} {{xymon_checks}}"
+              regexp="^{{monitoring_ip}}\s+{{ansible_nodename}} .*$"
+              line="{{monitoring_ip}} {{ansible_nodename}} {{xymon_checks}}"
   delegate_to: "{{ xymon_server }}"
   when: monitoring_file is not defined and monitoring_section is not defined
