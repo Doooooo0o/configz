@@ -54,6 +54,7 @@ Yet another ansible's playbook repository
  * Available for Debian (6 to 8) and Centos (6 to 7). **WARN** : xymon-server only for Debian (Centos dependencies are really hard to automate)
  * Configure apache for xymon-server
  * Configure xymon client and add the client in xymon server configuration to allow fetch data
+ * Allow to disable and drop sonde from client
  * **Note** : Using xymon-client tag/role needs a working xymon-server (whenever the server was installed with the playbook or not)
  * Cloud be (theoretically, to be tested) used to update xymon server binaries to last stable release
 * ovzdb
@@ -154,6 +155,9 @@ monitoring_file: dns ## Where to store the host in hosts.d xymon server director
 monitoring_section: dns ## Name of the page to use in xymon server webpage tree view (optionnal)
 monitoring_ip: xxx.xxx.xxx.xxx ## IP address of the client to add in server (mandatory)
 xymon_checks: "#" ## Checks to use for this client. Default '#' do a simple ping check
+xymon_disabled_sondes: ## Allow to disable checks on clients (DEBIAN only)
+  - ntpq
+  - libs
 
 #ovzdb
 ## You can duplicate backup locally and remotely

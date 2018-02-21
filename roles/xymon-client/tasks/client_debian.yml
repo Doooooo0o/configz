@@ -94,7 +94,7 @@
   tags:
     - xymon-client
     - client-configuration
-  command: /usr/lib/xymon/server/bin/xymon 127.0.0.1 "drop ansible_fqdn {{ item }}"
+  command: /usr/lib/xymon/server/bin/xymon 127.0.0.1 "drop {{ ansible_nodename }} {{ item }}"
   with_items: "{{ xymon_disabled_sondes }}"
   delegate_to: "{{ xymon_server }}"
   when: ansible_distribution == 'Debian' and xymon_disabled_sondes is defined
