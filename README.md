@@ -155,7 +155,7 @@ monitoring_file: dns ## Where to store the host in hosts.d xymon server director
 monitoring_section: dns ## Name of the page to use in xymon server webpage tree view (optionnal)
 monitoring_ip: xxx.xxx.xxx.xxx ## IP address of the client to add in server (mandatory)
 xymon_checks: "#" ## Checks to use for this client. Default '#' do a simple ping check
-xymon_disabled_sondes: ## Allow to disable checks on clients (DEBIAN only)
+xymon_disabled_sondes: ## Allow to disable checks on clients (DEBIAN >= 8 only)
   - ntpq
   - libs
 

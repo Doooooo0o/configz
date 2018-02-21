@@ -88,7 +88,7 @@
     backrefs: yes
   with_items: "{{ xymon_disabled_sondes }}"
   notify: restart xymon-client
-  when: ansible_distribution == 'Debian' and xymon_disabled_sondes is defined
+  when: ansible_distribution == 'Debian' and xymon_disabled_sondes is defined and ansible_distribution_major_version|int >= 8
 
 - name: Drop disabled sonde on Xymon server
   tags:
@@ -97,4 +97,4 @@
   command: /usr/lib/xymon/server/bin/xymon 127.0.0.1 "drop {{ ansible_nodename }} {{ item }}"
   with_items: "{{ xymon_disabled_sondes }}"
   delegate_to: "{{ xymon_server }}"
-  when: ansible_distribution == 'Debian' and xymon_disabled_sondes is defined
+  when: ansible_distribution == 'Debian' and xymon_disabled_sondes is defined and ansible_distribution_major_version|int >= 8
