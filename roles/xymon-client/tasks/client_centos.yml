@@ -48,6 +48,6 @@
   tags:
     - xymon-client
     - client-configuration
-  lineinfile: name=/etc/sysconfig/xymon-client regexp='^CLIENTHOSTNAME=' line='CLIENTHOSTNAME="{{ansible_fqdn}}"'
+  lineinfile: name=/etc/sysconfig/xymon-client regexp='^CLIENTHOSTNAME=' line='CLIENTHOSTNAME="{{ansible_nodename}}"'
   notify: restart xymon-client
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'

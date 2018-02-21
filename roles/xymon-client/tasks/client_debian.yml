@@ -58,7 +58,7 @@
   tags:
     - xymon-client
     - client-configuration
-  lineinfile: name=/etc/default/xymon-client regexp='^CLIENTHOSTNAME=' line='CLIENTHOSTNAME="{{ansible_fqdn}}"'
+  lineinfile: name=/etc/default/xymon-client regexp='^CLIENTHOSTNAME=' line='CLIENTHOSTNAME="{{ansible_nodename}}"'
   notify: restart xymon-client
   when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 8
 
