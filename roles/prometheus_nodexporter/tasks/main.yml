@@ -1,0 +1,33 @@
+---
+
+# Role to deploy prometheus node and add them to a prometheus server
+
+- name: Import OS variables
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: install node exporter
+  package:
+    name: "{{ prometheus_exporter_package }}"
+    state: latest
+  notify: enable exporter
+
+- import_tasks: debian.yml
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+- import_tasks: redhat.yml
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
+
+- name: import discovery file to server
+  template:
+    src: sd_file.yml.j2
+    dest: "{{ prometheus_sd_directory }}/{{ ansible_nodename }}.yml"
+  delegate_to: "{{ prometheus_server }}"
+
+- name: add nodename to server hosts
+  lineinfile:
+    path: /etc/hosts
+    regexp: '{{ prometheus_exporter_listen_address }} {{ ansible_nodename }}'
+    state: present
+    line: '{{ prometheus_exporter_listen_address }} {{ ansible_nodename }}'
+  delegate_to: "{{ prometheus_server }}"
+  when: prometheus_exporter_listen_address is defined and prometheus_exporter_listen_address != "0.0.0.0"
+  notify: reload server

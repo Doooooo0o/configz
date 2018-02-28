@@ -1,0 +1,6 @@
+---
+
+# Prometheus variables for Debian
+
+prometheus_exporter_package: "prometheus-node-exporter"
+prometheus_exporter_service: "prometheus-node-exporter.service"

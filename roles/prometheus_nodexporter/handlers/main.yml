@@ -1,0 +1,10 @@
+- name: restart exporter
+  systemd: state=restarted name= {{ prometheus_exporter_service }}
+
+- name: enable exporter
+  systemd: enabled=yes name={{ prometheus_exporter_service }}
+
+- name: reload server
+  uri: 
+    url: "http://{{ prometheus_server }}:9090/-/reload"
+    method: POST

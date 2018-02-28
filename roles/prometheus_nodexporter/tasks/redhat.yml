@@ -1,0 +1,9 @@
+---
+
+- name: enable exporter on listen address
+  lineinfile: 
+    path: /etc/sysconfig/node_exporter
+    regexp: '^LISTEN_ADDRESS='
+    backrefs: yes
+    line: 'LISTEN_ADDRESS="{{ prometheus_exporter_listen_address }}:{{ prometheus_exporter_listen_port }}"'
+  notify: restart exporter

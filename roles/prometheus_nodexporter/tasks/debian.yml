@@ -1,0 +1,9 @@
+---
+
+- name: enable exporter on listen address
+  lineinfile: 
+    path: /etc/default/prometheus-node-exporter
+    regexp: '^ARGS=(.*) \\'
+    backrefs: yes
+    line: 'ARGS=\1 -web.listen-address {{ prometheus_exporter_listen_address }}:{{ prometheus_exporter_listen_port }} \\'
+  notify: restart exporter

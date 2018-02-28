@@ -83,6 +83,18 @@ Yet another ansible's playbook repository
  * generate ed25519 keys for server instead of RSA
  * configure ssh client to use strong algorithms
  * will create compatibility problem with old ssh versions (openwrt, old putty, debian wheezy)
+* prometheus_nodexporter : allow configuration for node with prometheus node-exporter
+ * debian 9 and centos 7 compatible
+ * You can configure prometheus_exporter_listen_address (default 0.0.0.0) and prometheus_exporter_listen_port (default 9100)
+ * use file_sd_configs on prometheus server with prometheus_sd_directory (default to /etc/prometheus/nodes/) :
+```
+   - job_name: 'node'
+    file_sd_configs:
+      - files:
+        - '{{ prometheus_sd_directory }}/*.json'
+        - '{{ prometheus_sd_directory }}/*.yml'
+        - '{{ prometheus_sd_directory }}/*.yaml'
+```
 
 ## example host file
 =====

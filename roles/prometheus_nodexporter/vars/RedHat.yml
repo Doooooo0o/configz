@@ -1,0 +1,6 @@
+---
+
+# Prometheus variables for RedHat
+
+prometheus_exporter_package: "prometheus-node_exporter"
+prometheus_exporter_service: "node_exporter.service"

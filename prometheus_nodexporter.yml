@@ -1,0 +1,8 @@
+---
+
+- name: Configure prometheus node to be used with server
+  hosts: all
+  user: root
+  gather_facts: yes
+  roles:
+    - prometheus_nodexporter
