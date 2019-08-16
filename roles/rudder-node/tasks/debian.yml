@@ -4,16 +4,25 @@
   apt_key: url="https://www.rudder-project.org/apt-repos/rudder_apt_key.pub" state=present
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- name: add rudder repo url -- debian
+- name: remove old rudder repo url -- debian
   apt_repository:
     repo: 'deb http://www.rudder-project.org/apt-4.1/ {{ansible_distribution_release}} main'
-    state: present
+    state: absent
     filename: 'rudder'
     update_cache: yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
+- name: Add rudder repo url -- debian
+  apt_repository:
+    repo: 'deb http://repository.rudder.io/apt/5.0/ {{ansible_distribution_release}} main'
+    state: present
+    filename: 'rudder'
+    update_cache: yes
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  notify: agent-run
+
 - name: install rudder agent -- debian
-  apt: pkg=rudder-agent state=present update_cache=yes
+  apt: pkg=rudder-agent state=latest update_cache=yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: configure rudder server -- debian
