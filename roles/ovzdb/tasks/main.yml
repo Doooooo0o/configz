@@ -21,6 +21,7 @@
     - bc
     - uuid-runtime
     - pbzip2
+    - bzip2
   when: ansible_distribution == 'Debian'
 
 - name: install openvz-diff-backups - prerequisite Centos
@@ -40,53 +41,25 @@
 ## Ref : src option from http://docs.ansible.com/ansible/unarchive_module.html
 - name: install openvz-diff-backups - download
   get_url:
-          url=http://download.openvz-diff-backups.fr/releases/openvz-diff-backups_v0.9.9.12-beta.tar.gz 
+          url=https://download.openvz-diff-backups.fr/releases/openvz-diff-backups_v1.0.1.9-stable.tar.gz
      dest=/tmp/openvz-diff-backup.tar.gz
      force=yes
   tags:
     - backup
-  when: not beta | bool
 
 - name: install openvz-diff-backups - untar
   unarchive: src=/tmp/openvz-diff-backup.tar.gz dest=/root/ copy=no
   tags:
     - backup
-  when: not beta | bool
-
-### Possibility to use beta version ###
-- name: install openvz-diff-backup - beta file
-  copy:
-     src=openvz-diff-backups_v0.9.9.12-beta.tar.gz
-     dest=/tmp/openvz-diff-backup.tar.gz
-     force=yes
-  tags:
-    - backup
-  when: beta | bool
-
-- name: install openvz-diff-backups - untar beta
-  unarchive: src=/tmp/openvz-diff-backup.tar.gz dest=/root/ copy=no
-  tags:
-    - backup
-  when: beta | bool
 
 #### Configure openvz-diff-backups ####
 - name: install openvz-diff-backups - link to simple directory
   file:
-     src=/root/openvz-diff-backups_v0.9.9.12-beta
+     src=/root/openvz-diff-backups_v1.0.1.9-stable
      path=/root/openvz-diff-backups
      state=link
   tags:
     - backup
-  when: not beta | bool
-
-- name: install openvz-diff-backups - link to simple directory - beta
-  file:
-     src=/root/openvz-diff-backups_v0.9.9.12-beta
-     path=/root/openvz-diff-backups
-     state=link
-  tags:
-    - backup
-  when: beta | bool
 
 - name: install openvz-diff-backups - upload conf file
   template: src=openvz-diff-backups.conf.j2 dest=/etc/openvz-diff-backups.conf
@@ -108,7 +81,6 @@
   retries: 10
   tags:
     - backup
-  when: not beta | bool
 
 - name: install openvz-diff-backups - cron for dump
   cron: name="backup container with openvz-diff-backups" minute="{{ backup_minute }}" hour="{{ backup_hour }}" job='/usr/local/bin/openvz-diff-backups backup all hold -q  -c /etc/openvz-diff-backups.conf> /dev/null'

@@ -58,7 +58,7 @@ Yet another ansible's playbook repository
  * **Note** : Using xymon-client tag/role needs a working xymon-server (whenever the server was installed with the playbook or not)
  * Cloud be (theoretically, to be tested) used to update xymon server binaries to last stable release
 * ovzdb
- * http://projets.developpeur-neurasthenique.fr/projects/openvz-diff-backups
+ * https://www.openvz-diff-backups.fr/
  * Install openvz-diff-backup to an openvz host to backup container
  * enable update of openvz-diff-backup thanks to 0.9.4 version
  * enable backup AND upload feature via cron
@@ -66,7 +66,6 @@ Yet another ansible's playbook repository
  * enable customization of configuration file
  * use standard installation method (conf in /etc, link binary to /usr/local/bin)
  * provide bonus hook to create files when problems occurs (additionnally to send emails), allowing monitoring with standard tool (ie xymon and else)
- * Possibility to use beta version in file directory: hard coded for the moment, name the file openvz-diff-backups_v0.9.8-beta.tar.gz and use -e beta=true on command line
 * rudder-node
  * https://www.rudder-project.org
  * allow to configure a debian/ubuntu rudder node to report to a rudder server
