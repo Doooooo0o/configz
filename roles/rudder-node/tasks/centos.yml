@@ -4,7 +4,7 @@
   rpm_key: key="https://www.rudder-project.org/apt-repos/rudder_apt_key.pub" state=present
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
 
-- name: Remove old rudder repo url -- centos
+- name: Remove 4.1 rudder repo url -- centos
   yum_repository:
     name: rudder
     description: Rudder 4.1 EL repository
@@ -15,15 +15,26 @@
     state: absent
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
 
-- name: add rudder repo url -- centos                                                                                                                                                                                
-  yum_repository:                                                                                                                                                                                                    
-    name: rudder                                                                                                                                                                                                     
-    description: Rudder 5.0 EL repository                                                                                                                                                                            
-    file: rudder_repo                                                                                                                                                                                                
-    baseurl: http://repository.rudder.io/rpm/5.0/RHEL_$releasever/                                                                                                                                                 
-    gpgcheck: yes                                                                                                                                                                                                    
-    gpgkey: https://repository.rudder.io/rpm/rudder_rpm_key.pub                                                                                                                           
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo' 
+- name: Remove 5.0 rudder repo url -- centos
+  yum_repository:
+    name: rudder
+    description: Rudder 5.0 EL repository
+    file: rudder_repo
+    baseurl: http://repository.rudder.io/rpm/5.0/RHEL_$releasever/
+    gpgcheck: yes
+    gpgkey: https://repository.rudder.io/rpm/rudder_rpm_key.pub
+    state: absent
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
+
+- name: add 6.0 rudder repo url -- centos
+  yum_repository:
+    name: rudder
+    description: Rudder 6.0
+    file: rudder_repo
+    baseurl: http://repository.rudder.io/rpm/6.0/RHEL_$releasever/
+    gpgcheck: yes
+    gpgkey: https://repository.rudder.io/rpm/rudder_rpm_key.pub
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
 
 - name: install rudder agent -- centos
   yum: name=rudder-agent state=latest update_cache=yes

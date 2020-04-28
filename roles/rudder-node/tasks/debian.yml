@@ -4,7 +4,7 @@
   apt_key: url="https://www.rudder-project.org/apt-repos/rudder_apt_key.pub" state=present
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- name: remove old rudder repo url -- debian
+- name: remove 4.1 rudder repo url -- debian
   apt_repository:
     repo: 'deb http://www.rudder-project.org/apt-4.1/ {{ansible_distribution_release}} main'
     state: absent
@@ -12,18 +12,26 @@
     update_cache: yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- name: Add rudder repo url -- debian
+- name: remove 5.0 rudder repo url -- debian
   apt_repository:
     repo: 'deb http://repository.rudder.io/apt/5.0/ {{ansible_distribution_release}} main'
+    state: absent
+    filename: 'rudder'
+    update_cache: yes
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Add 6.0 rudder repo url -- debian
+  apt_repository:
+    repo: 'deb http://repository.rudder.io/apt/6.0/ {{ansible_distribution_release}} main'
     state: present
     filename: 'rudder'
     update_cache: yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-  notify: agent-run
 
 - name: install rudder agent -- debian
   apt: pkg=rudder-agent state=latest update_cache=yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  notify: agent-run
 
 - name: configure rudder server -- debian
   template:  src=policy_server.dat.tpl dest=/var/rudder/cfengine-community/policy_server.dat
@@ -32,4 +40,3 @@
       - rudder-start
       - agent-inventory
       - agent-run
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'

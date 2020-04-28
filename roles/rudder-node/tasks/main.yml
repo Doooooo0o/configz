@@ -4,5 +4,18 @@
 - include: centos.yml
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'CloudLinux' or ansible_distribution == 'Virtuozzo'
 
+- name: Create directory to override conf in systemd
+  file:
+    path: /etc/systemd/system/rudder-cf-serverd.service.d
+    state: directory
+
+- name: Disable 5.0.9 default log verbosity
+  copy:
+    src: rudder_override.conf
+    dest: /etc/systemd/system/rudder-cf-serverd.service.d/override.conf
+  notify:
+    - reload systemd
+    - restart rudder-cf-serverd
+
 - fail: msg="You can now connect to your rudder server and allow new nodes"
   ignore_errors: yes

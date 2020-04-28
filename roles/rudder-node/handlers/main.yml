@@ -8,3 +8,9 @@
 
 - name: agent-run
   command: rudder agent run
+
+- name: reload systemd
+  command: systemctl daemon-reload
+
+- name: restart rudder-cf-serverd
+  service: name=rudder-cf-serverd state=restarted
