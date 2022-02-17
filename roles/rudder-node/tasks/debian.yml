@@ -4,27 +4,25 @@
   apt_key: url="https://www.rudder-project.org/apt-repos/rudder_apt_key.pub" state=present
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- name: remove 4.1 rudder repo url -- debian
+- name: remove older rudder repo url -- debian
   apt_repository:
-    repo: 'deb http://www.rudder-project.org/apt-4.1/ {{ansible_distribution_release}} main'
+    repo: 'deb http://repository.rudder.io/apt/{{ item }}/ {{ansible_distribution_release}} main'
     state: absent
     filename: 'rudder'
     update_cache: yes
+  with_items:
+    - 4.1
+    - 5.0
+    - 6.0
+    - 6.1
+    - 6.2
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- name: remove 5.0 rudder repo url -- debian
+- name: Add 7.0 rudder repo url
   apt_repository:
-    repo: 'deb http://repository.rudder.io/apt/5.0/ {{ansible_distribution_release}} main'
-    state: absent
-    filename: 'rudder'
-    update_cache: yes
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-
-- name: Add 6.0 rudder repo url -- debian
-  apt_repository:
-    repo: 'deb http://repository.rudder.io/apt/6.0/ {{ansible_distribution_release}} main'
+    repo: 'deb http://repository.rudder.io/apt/7.0/ {{ansible_distribution_release}} main'
     state: present
-    filename: 'rudder'
+    filename: 'rudder-apt'
     update_cache: yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
